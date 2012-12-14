@@ -1,0 +1,9 @@
+Changelog
+=========
+
+0.1 (2012-12-14)
+----------------
+
+- Initial release.
+  [plamut, zupo]
+

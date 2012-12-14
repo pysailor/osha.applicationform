@@ -42,7 +42,6 @@ class PFGSaveDataAdapterWithFileUpload(FormSaveDataAdapter):
     def onSuccess(self, fields, REQUEST=None):
         """The essential method of a PloneFormGen Adapter."""
 
-        import pdb; pdb.set_trace()
         super(PFGSaveDataAdapterWithFileUpload, self).onSuccess(fields, REQUEST)
 
         print("This is overriden onSucces method")

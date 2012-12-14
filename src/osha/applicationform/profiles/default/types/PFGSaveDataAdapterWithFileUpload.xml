@@ -1,13 +1,13 @@
 <?xml version="1.0"?>
 <object name="PFGSaveDataAdapterWithFileUpload"
    meta_type="Factory-based Type Information with dynamic views"
-   i18n:domain="osha.quizzes" xmlns:i18n="http://xml.zope.org/namespaces/i18n">
+   i18n:domain="osha.applicationform" xmlns:i18n="http://xml.zope.org/namespaces/i18n">
   <property name="title" i18n:translate="">PFGSaveDataAdapterWithFileUpload</property>
   <property name="description"
     i18n:translate="">Save form data along with uploaded files.</property>
   <property name="content_meta_type">PFGSaveDataAdapterWithFileUpload</property>
-  <property name="content_icon">++resource++osha.applicationform/save_data_adapter_with_file_upload_icon.png</property>
-  <property name="product">osha.quizzes</property>
+  <property name="content_icon">FormAction.gif</property>
+  <property name="product">osha.applicationform</property>
   <property name="factory">addPFGSaveDataAdapterWithFileUpload</property>
   <property name="immediate_view">atct_edit</property>
   <property name="global_allow">False</property>

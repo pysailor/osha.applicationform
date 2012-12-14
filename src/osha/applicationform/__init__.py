@@ -3,7 +3,7 @@
 
 from Products.Archetypes import atapi
 from Products.CMFCore import utils as cmf_utils
-from osha.quizzes import config
+from osha.applicationform import config
 from zope.i18nmessageid import MessageFactory
 
 _ = MessageFactory('osha.applicationform')

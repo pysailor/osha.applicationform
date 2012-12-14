@@ -24,24 +24,6 @@ class TestInstall(IntegrationTestCase):
         self.installer.uninstallProducts(['osha.applicationform'])
         self.failIf(self.installer.isProductInstalled('osha.applicationform'))
 
-    # Folder.xml
-    def test_folder_available_layouts(self):
-        """Test that our custom display layout (@@applicationform) is available on folders
-        and that the default ones are also still there.
-        """
-        layouts = self.portal.folder.getAvailableLayouts()
-        layout_ids = [id for id, title in layouts]
-
-        # default layouts still here?
-        self.assertIn('folder_listing', layout_ids)
-        self.assertIn('folder_summary_view', layout_ids)
-        self.assertIn('folder_tabular_view', layout_ids)
-        self.assertIn('atct_album_view', layout_ids)
-        self.assertIn('folder_full_view', layout_ids)
-
-        # custom applicationform layout present?
-        self.assertIn('applicationform', layout_ids)
-
 
 def test_suite():
     """This sets up a test suite that actually runs the tests in the class

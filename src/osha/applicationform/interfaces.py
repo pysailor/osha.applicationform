@@ -5,5 +5,5 @@ from Products.PloneFormGen.interfaces.actionAdapter import \
     IPloneFormGenActionAdapter
 
 
-class ISaveDataAdapterWithFileUpload(IPloneFormGenActionAdapter):
+class IPFGSaveDataAdapterWithFileUpload(IPloneFormGenActionAdapter):
     """Save form data along with uploaded files."""

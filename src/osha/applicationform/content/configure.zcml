@@ -4,5 +4,11 @@
     i18n_domain="osha.applicationform">
 
   <!-- -*- extra stuff goes here -*- -->
+  <class class=".pfg_save_data_adapter_with_file_upload.PFGSaveDataAdapterWithFileUpload">
+    <require
+        permission="zope2.View"
+        interface="..interfaces.IPFGSaveDataAdapterWithFileUpload"
+        />
+  </class>
 
 </configure>

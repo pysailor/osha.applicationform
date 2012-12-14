@@ -1,14 +1,8 @@
 <configure
     xmlns="http://namespaces.zope.org/zope"
     xmlns:five="http://namespaces.zope.org/five"
-    i18n_domain="osha.quizzes">
+    i18n_domain="osha.applicationform">
 
   <!-- -*- extra stuff goes here -*- -->
-  <class class=".pfgcorrectanswersadapter.PFGCorrectAnswersAdapter">
-    <require
-        permission="zope2.View"
-        interface="..interfaces.IPFGCorrectAnswersAdapter"
-        />
-  </class>
 
 </configure>

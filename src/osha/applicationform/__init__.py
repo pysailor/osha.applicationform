@@ -6,7 +6,7 @@ from Products.CMFCore import utils as cmf_utils
 from osha.quizzes import config
 from zope.i18nmessageid import MessageFactory
 
-_ = MessageFactory('osha.quizzes')
+_ = MessageFactory('osha.applicationform')
 
 
 def initialize(context):

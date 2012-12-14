@@ -2,11 +2,11 @@
     xmlns="http://namespaces.zope.org/zope"
     xmlns:browser="http://namespaces.zope.org/browser"
     xmlns:plone="http://namespaces.plone.org/plone"
-    i18n_domain="osha.quizzes">
+    i18n_domain="osha.applicationform">
 
     <!-- Publish static files -->
     <browser:resourceDirectory
-      name="osha.quizzes"
+      name="osha.applicationform"
       directory="static"
       />
 

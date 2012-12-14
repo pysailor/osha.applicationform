@@ -15,22 +15,22 @@ from plone.testing import z2
 import unittest2 as unittest
 
 
-class OshaQuizzesLayer(PloneSandboxLayer):
+class OshaApplicationformLayer(PloneSandboxLayer):
 
     defaultBases = (PLONE_FIXTURE,)
 
     def setUpZope(self, app, configurationContext):
         """Set up Zope."""
         # Load ZCML
-        import osha.quizzes
-        self.loadZCML(package=osha.quizzes)
-        z2.installProduct(app, 'osha.quizzes')
+        import osha.applicationform
+        self.loadZCML(package=osha.applicationform)
+        z2.installProduct(app, 'osha.applicationform')
         z2.installProduct(app, 'Products.PloneFormGen')
 
     def setUpPloneSite(self, portal):
         """Set up Plone."""
         # Install into Plone site using portal_setup
-        applyProfile(portal, 'osha.quizzes:default')
+        applyProfile(portal, 'osha.applicationform:default')
 
         # Login and create some test
         setRoles(portal, TEST_USER_ID, ['Manager'])
@@ -44,14 +44,14 @@ class OshaQuizzesLayer(PloneSandboxLayer):
 
     def tearDownZope(self, app):
         """Tear down Zope."""
-        z2.uninstallProduct(app, 'osha.quizzes')
+        z2.uninstallProduct(app, 'osha.applicationform')
 
 
-FIXTURE = OshaQuizzesLayer()
+FIXTURE = OshaApplicationformLayer()
 INTEGRATION_TESTING = IntegrationTesting(
-    bases=(FIXTURE,), name="OshaQuizzesLayer:Integration")
+    bases=(FIXTURE,), name="OshaApplicationformLayer:Integration")
 FUNCTIONAL_TESTING = FunctionalTesting(
-    bases=(FIXTURE,), name="OshaQuizzesLayer:Functional")
+    bases=(FIXTURE,), name="OshaApplicationformLayer:Functional")
 
 
 class IntegrationTestCase(unittest.TestCase):

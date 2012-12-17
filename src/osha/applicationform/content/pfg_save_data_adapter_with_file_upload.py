@@ -64,7 +64,7 @@ class PFGSaveDataAdapterWithFileUpload(FormSaveDataAdapter):
             )
 
         # uploaded files have to be stored separately, so create a folder
-        # for storing filed uploaded by this form submission
+        # for storing files uploaded by this form submission
         file_folder = plone_api.content.create(
             container=uploads_folder,
             type="Folder",

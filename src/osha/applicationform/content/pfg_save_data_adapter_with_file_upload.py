@@ -10,6 +10,7 @@ from Products.ATContentTypes.content import schemata
 from Products.CMFCore.permissions import View
 from Products.PloneFormGen.content.saveDataAdapter import FormSaveDataAdapter
 from zope.interface import implements
+from ZPublisher.HTTPRequest import FileUpload
 
 import uuid
 
@@ -44,55 +45,47 @@ class PFGSaveDataAdapterWithFileUpload(FormSaveDataAdapter):
     def onSuccess(self, fields, REQUEST=None):
         """The essential method of a PloneFormGen Adapter."""
 
-        # 1. v csv zapises nek ID ki ga dobis iz plone.uuid
-        #     to naredis tako, da dolocis nek uuid in ga dodas v fields
-        #      potem naj se zadeva shrani ...
+        # make up a new random uuid, regardless of what might have been sent
         submission_uuid = str(uuid.uuid4())  # uuid4 = random UUID
-
         REQUEST.form['submission_uuid'] = submission_uuid
 
-        # fields[0].fgField.get(REQUEST) ... tako dobis vrednost
-
-        # REQUEST.form.get("fieldName", "default_val_if_missing")
-
-
-
-        folder = plone_api.content.get(UID=submission_uuid)
-        if not folder:
-            form_folder = plone_api.content.get(path=REQUEST["PATH_INFO"])  # TODO: this OK?
-            folder = plone_api.content.create(
-                container=form_folder,
-                type="Folder",
-                id=submission_uuid,
-            )
-
-        # notr v folder kreiras za vsak uploadan file en ATFile
-        # save CV and motivation letter
-        plone_api.content.create(
-            container=folder,
-            type="File",
-            id="CV",
-            file=REQUEST.form['cv_file']
-            # TODO: file contents ... cv_file
-        )
-
-        plone_api.content.create(
-            container=folder,
-            type="File",
-            id="motivation-letter",
-            file=REQUEST.form['motivation-letter_file']
-        )
-
-        # NOTE: this has to be called *after* we save files, because otherwise
-        # uploaded file contents are not available anymore in REQUEST
         super(PFGSaveDataAdapterWithFileUpload, self).onSuccess(fields, REQUEST)
 
-        # popravek 2.: v folder uploads nov subfolder z idjem istim kot si ga zapisal
-        # v CSV in potem v ta subfolder das ATFile
+        # if the uploads folder does not yet exist, it needs to be created
+        form_folder = self.getParentNode()
+        uploads_folder_name = "uploads"
 
+        uploads_folder = form_folder.get(uploads_folder_name)
+        if not uploads_folder:
+            uploads_folder = plone_api.content.create(
+                container=form_folder,
+                type="Folder",
+                id=uploads_folder_name,
+            )
 
+        # uploaded files have to be stored separately, so create a folder
+        # for storing filed uploaded by this form submission
+        file_folder = plone_api.content.create(
+            container=uploads_folder,
+            type="Folder",
+            id=submission_uuid,
+        )
 
-        # TODO: on error transaction abort?
+        # now store all uploaded files
+        for f in fields:
+            if not f.isFileField():
+                continue
+
+            field_name = f.fgField.getName()
+            file_obj = REQUEST.form.get('{0}_file'.format(field_name))
+
+            if isinstance(file_obj, FileUpload) and file_obj.filename != '':
+                plone_api.content.create(
+                    container=file_folder,
+                    type="File",
+                    id=field_name,
+                    file=file_obj
+                )
 
 
 atapi.registerType(PFGSaveDataAdapterWithFileUpload, PROJECTNAME)

@@ -47,36 +47,23 @@ class PFGSaveDataAdapterWithFileUpload(FormSaveDataAdapter):
         # 1. v csv zapises nek ID ki ga dobis iz plone.uuid
         #     to naredis tako, da dolocis nek uuid in ga dodas v fields
         #      potem naj se zadeva shrani ...
-        application_uuid = str(uuid.uuid4())  # uuid4 = random UUID
+        submission_uuid = str(uuid.uuid4())  # uuid4 = random UUID
 
-        REQUEST.form['application_uuid'] = application_uuid
-
-
-        # # TODO: dodaj application_uuid?
-        # atapi.StringField('application_uuid',
-        #     required = True,
-        #     default = uuid.uuid4(),  # uuid4 = random UUID
-        # ),
-
-        # TODO: nekje treba shemo dodati .. tole dodatno polje ...
-        # fields = [<FGStringField at /Plone/my-form-folder/first-name>]
+        REQUEST.form['submission_uuid'] = submission_uuid
 
         # fields[0].fgField.get(REQUEST) ... tako dobis vrednost
-
-        # ocitno treba v seznam polj dodati uuid pa to v request podturiti,
-        # da bo notri in se bo shranilo v CSV
 
         # REQUEST.form.get("fieldName", "default_val_if_missing")
 
 
 
-        folder = plone_api.content.get(UID=application_uuid)
+        folder = plone_api.content.get(UID=submission_uuid)
         if not folder:
             form_folder = plone_api.content.get(path=REQUEST["PATH_INFO"])  # TODO: this OK?
             folder = plone_api.content.create(
                 container=form_folder,
                 type="Folder",
-                id=application_uuid,
+                id=submission_uuid,
             )
 
         # notr v folder kreiras za vsak uploadan file en ATFile

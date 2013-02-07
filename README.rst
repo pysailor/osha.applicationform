@@ -1,6 +1,6 @@
-========================
-Build quizzes with Plone
-========================
+==================================
+Build application forms with Plone
+==================================
 
 `osha.applicationform` is a minimalistic Plone add-on that builds on top of the
 `PloneFormGen` product to enable you to build forms on the EU-OSHA site,
@@ -19,6 +19,26 @@ To install ``osha.applicationform`` you simply add ``osha.applicationform`` to
 the list of eggs in your buildout, run buildout and restart Plone. Then,
 install `osha.applicationform` using the Add-ons control panel.
 
+Importing HR Application Form
+-----------------------------
+
+Theoretically it should be possible to import the form and its fields
+automatically with the 'content' GS profile using the structure folder. But
+there are some errors when running the profile, so currently the form must be
+imported manually.
+
+File hr-application-form.tar.gz in profiles/content contains the exported
+form with all the fields.
+
+Steps for importing the form:
+
+1. Create a new Form Folder
+2. Click on "Actions -> Import"
+3. Select file "hr-application-form.tar.gz"
+4. Check "Remove Existing Form Items?"
+5. Click "import"
+
+
 Requirements
 ============
 
@@ -29,5 +49,4 @@ Usage
 =====
 
 TODO
-
 

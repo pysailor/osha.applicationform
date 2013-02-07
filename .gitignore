@@ -14,3 +14,5 @@ lib
 local
 parts
 var
+src/Products.*
+src/plone.api

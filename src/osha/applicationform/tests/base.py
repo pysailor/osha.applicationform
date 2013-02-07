@@ -23,8 +23,13 @@ class OshaApplicationformLayer(PloneSandboxLayer):
         """Set up Zope."""
         # Load ZCML
         import osha.applicationform
+        import Products.PFGDataGrid
         self.loadZCML(package=osha.applicationform)
+        self.loadZCML(package=Products.DataGridField)
+        self.loadZCML(package=Products.PFGDataGrid)
         z2.installProduct(app, 'osha.applicationform')
+        z2.installProduct(app, 'Products.DataGridField')
+        z2.installProduct(app, 'Products.PFGDataGrid')
         z2.installProduct(app, 'Products.PloneFormGen')
 
     def setUpPloneSite(self, portal):
@@ -45,6 +50,9 @@ class OshaApplicationformLayer(PloneSandboxLayer):
     def tearDownZope(self, app):
         """Tear down Zope."""
         z2.uninstallProduct(app, 'osha.applicationform')
+        z2.uninstallProduct(app, 'Products.DataGridField')
+        z2.uninstallProduct(app, 'Products.PFGDataGrid')
+        z2.uninstallProduct(app, 'Products.PloneFormGen')
 
 
 FIXTURE = OshaApplicationformLayer()

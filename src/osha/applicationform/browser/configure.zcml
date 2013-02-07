@@ -6,8 +6,22 @@
 
     <!-- Publish static files -->
     <browser:resourceDirectory
-      name="osha.applicationform"
-      directory="static"
-      />
+       name="osha.applicationform"
+       directory="static"
+       />
+
+    <browser:page
+       for="Products.PloneFormGen.interfaces.IPloneFormGenField"
+       name="vacancies-helper"
+       class=".views.VacanciesView"
+       permission="zope2.View"
+       />
+
+    <browser:page
+       for="Products.PloneFormGen.interfaces.IPloneFormGenField"
+       name="countries-helper"
+       class=".views.CountriesView"
+       permission="zope2.View"
+       />
 
 </configure>

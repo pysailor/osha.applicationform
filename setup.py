@@ -45,6 +45,8 @@ setup(
         'plone.api',
         'plone.app.contentlisting',
         'Products.PloneFormGen',
+        'Products.PFGDataGrid',
+        'Products.PublicJobVacancy',
         'setuptools',
     ],
     extras_require={

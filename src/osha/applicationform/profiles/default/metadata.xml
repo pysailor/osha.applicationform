@@ -2,5 +2,8 @@
     <version>1</version>
     <dependencies>
       <dependency>profile-Products.PloneFormGen:default</dependency>
+      <dependency>profile-Products.DataGridField:default</dependency>
+      <dependency>profile-Products.PFGDataGrid:default</dependency>
+      <dependency>profile-Products.PublicJobVacancy:default</dependency>
     </dependencies>
 </metadata>

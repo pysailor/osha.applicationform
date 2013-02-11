@@ -24,4 +24,11 @@
        permission="zope2.View"
        />
 
+    <browser:page
+       for="Products.PloneFormGen.interfaces.IPloneFormGenField"
+       name="nationalities-helper"
+       class=".views.NationalitiesView"
+       permission="zope2.View"
+       />
+
 </configure>

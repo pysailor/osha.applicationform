@@ -1,5 +1,6 @@
 from datetime import datetime
 from DateTime import DateTime
+from osha.applicationform.config import NATIONALITIES
 from plone.i18n.locales.countries import countries
 from Products.CMFCore.utils import getToolByName
 from Products.Five.browser import BrowserView
@@ -25,3 +26,10 @@ class CountriesView(BrowserView):
 
     def __call__(self):
         return sorted(countries.getCountryListing(), key=lambda x: x[1])
+
+
+class NationalitiesView(BrowserView):
+    """ Helper view to get a list of nationalities. """
+
+    def __call__(self):
+        return [(item.lower(), item) for item in NATIONALITIES]

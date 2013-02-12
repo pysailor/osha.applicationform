@@ -2,8 +2,8 @@
 """Setup/installation tests for this package."""
 
 from osha.applicationform.tests.base import IntegrationTestCase
-from Products.CMFCore.utils import getToolByName
 
+from plone import api
 import unittest2 as unittest
 
 
@@ -13,16 +13,25 @@ class TestInstall(IntegrationTestCase):
     def setUp(self):
         """Custom shared utility setup for tests."""
         self.portal = self.layer['portal']
-        self.installer = getToolByName(self.portal, 'portal_quickinstaller')
+        self.installer = api.portal.get_tool('portal_quickinstaller')
 
     def test_product_installed(self):
-        """Test if osha.applicationform is installed with portal_quickinstaller."""
-        self.failUnless(self.installer.isProductInstalled('osha.applicationform'))
+        """Test if osha.applicationform is installed with
+        portal_quickinstaller.
+        """
+        self.failUnless(
+            self.installer.isProductInstalled('osha.applicationform'))
 
     def test_uninstall(self):
         """Test if osha.applicationform is cleanly uninstalled."""
         self.installer.uninstallProducts(['osha.applicationform'])
         self.failIf(self.installer.isProductInstalled('osha.applicationform'))
+
+    def test_folder_addable(self):
+        """Test if Folder type can be created inside a FormFolder."""
+        types = api.portal.get_tool('portal_types')
+        allowed_types = types.getTypeInfo('FormFolder').allowed_content_types
+        self.failUnless('Folder' in allowed_types)
 
 
 def test_suite():

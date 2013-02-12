@@ -68,7 +68,7 @@ class PFGSaveDataAdapterWithFileUpload(FormSaveDataAdapter):
                 target = cf.get(self.getId())
                 if (
                     target is not None and
-                    target.meta_type == 'FormSaveDataAdapter'
+                    target.meta_type == 'PFGSaveDataAdapterWithFileUpload'
                 ):
                     target.onSuccess(fields, REQUEST, loopstop=True)
                     return

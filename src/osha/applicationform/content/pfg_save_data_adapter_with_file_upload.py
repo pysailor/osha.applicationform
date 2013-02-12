@@ -2,26 +2,33 @@
 """Definition of the PFGCorrectAnswersAdapter content type"""
 
 from AccessControl import ClassSecurityInfo
+from DateTime import DateTime
+from osha.applicationform.config import PFG_FILE_UPLOAD_PREFIX
 from osha.applicationform.config import PROJECTNAME
 from osha.applicationform.interfaces import IPFGSaveDataAdapterWithFileUpload
 from plone import api as plone_api
 from Products.Archetypes import atapi
 from Products.ATContentTypes.content import schemata
 from Products.CMFCore.permissions import View
+from Products.CMFPlone.utils import safe_hasattr
+from Products.PloneFormGen.config import LP_SAVE_TO_CANONICAL
 from Products.PloneFormGen.content.saveDataAdapter import FormSaveDataAdapter
+from types import StringTypes
 from zope.interface import implements
 from ZPublisher.HTTPRequest import FileUpload
 
 import uuid
 
-PFGSaveDataAdapterWithFileUploadSchema = FormSaveDataAdapter.schema.copy() + atapi.Schema((
-    # -*- Your Archetypes field definitions here ... -*-
-))
+PFGSaveDataAdapterWithFileUploadSchema = FormSaveDataAdapter.schema.copy() + \
+    atapi.Schema((
+        # -*- Your Archetypes field definitions here ... -*-
+    ))
 
 # Set storage on fields copied from ATContentTypeSchema, making sure
 # they work well with the python bridge properties.
 
-PFGSaveDataAdapterWithFileUploadSchema['title'].storage = atapi.AnnotationStorage()
+PFGSaveDataAdapterWithFileUploadSchema['title'].storage = \
+    atapi.AnnotationStorage()
 PFGSaveDataAdapterWithFileUploadSchema['description'].storage = \
     atapi.AnnotationStorage()
 
@@ -42,14 +49,33 @@ class PFGSaveDataAdapterWithFileUpload(FormSaveDataAdapter):
 
     security.declareProtected(View, 'onSuccess')
 
-    def onSuccess(self, fields, REQUEST=None):
-        """The essential method of a PloneFormGen Adapter."""
+    def onSuccess(self, fields, REQUEST=None, loopstop=False):
+        """The essential method of a PloneFormGen Adapter. Saves the data."""
+
+        if LP_SAVE_TO_CANONICAL and not loopstop:
+            # LinguaPlone functionality:
+            # check to see if we're in a translated
+            # form folder, but not the canonical version.
+            parent = self.aq_parent
+            if (
+                safe_hasattr(parent, 'isTranslation') and
+                parent.isTranslation() and not parent.isCanonical()
+            ):
+                # look in the canonical version to see if there is
+                # a matching (by id) save-data adapter.
+                # If so, call its onSuccess method
+                cf = parent.getCanonical()
+                target = cf.get(self.getId())
+                if (
+                    target is not None and
+                    target.meta_type == 'FormSaveDataAdapter'
+                ):
+                    target.onSuccess(fields, REQUEST, loopstop=True)
+                    return
 
         # make up a new random uuid, regardless of what might have been sent
         submission_uuid = str(uuid.uuid4())  # uuid4 = random UUID
         REQUEST.form['submission_uuid'] = submission_uuid
-
-        super(PFGSaveDataAdapterWithFileUpload, self).onSuccess(fields, REQUEST)
 
         # if the uploads folder does not yet exist, it needs to be created
         form_folder = self.getParentNode()
@@ -71,21 +97,45 @@ class PFGSaveDataAdapterWithFileUpload(FormSaveDataAdapter):
             id=submission_uuid,
         )
 
-        # now store all uploaded files
+        data = []
         for f in fields:
-            if not f.isFileField():
+            showFields = getattr(self, 'showFields', [])
+            if showFields and f.id not in showFields:
                 continue
 
-            field_name = f.fgField.getName()
-            file_obj = REQUEST.form.get('{0}_file'.format(field_name))
+            # store all uploaded files
+            if f.isFileField():
+                field_name = f.fgField.getName()
+                file_obj = REQUEST.form.get('{0}_file'.format(field_name))
 
-            if isinstance(file_obj, FileUpload) and file_obj.filename != '':
-                plone_api.content.create(
-                    container=file_folder,
-                    type="File",
-                    id=field_name,
-                    file=file_obj
-                )
+                if (
+                    isinstance(file_obj, FileUpload) and
+                    file_obj.filename != ''
+                ):
+                    plone_api.content.create(
+                        container=file_folder,
+                        type="File",
+                        id=field_name,
+                        file=file_obj
+                    )
+                    data.append(
+                        '%s-%s' % (PFG_FILE_UPLOAD_PREFIX, submission_uuid))
+            elif not f.isLabel():
+                val = REQUEST.form.get(f.fgField.getName(), '')
+                if not type(val) in StringTypes:
+                    # Zope has marshalled the field into
+                    # something other than a string
+                    val = str(val)
+                data.append(val)
+
+        if self.ExtraData:
+            for f in self.ExtraData:
+                if f == 'dt':
+                    data.append(str(DateTime()))
+                else:
+                    data.append(getattr(REQUEST, f, ''))
+
+        self._addDataRow(data)
 
 
 atapi.registerType(PFGSaveDataAdapterWithFileUpload, PROJECTNAME)

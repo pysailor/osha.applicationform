@@ -31,4 +31,12 @@
        permission="zope2.View"
        />
 
+    <browser:page
+       for="osha.applicationform.interfaces.IPFGSaveDataAdapterWithFileUpload"
+       name="osh-savedata-tabview"
+       class=".views.PFGSaveDataAdapterWithFileUploadView"
+       template="templates/savedata_tabview.pt"
+       permission="zope2.View"
+       />
+
 </configure>

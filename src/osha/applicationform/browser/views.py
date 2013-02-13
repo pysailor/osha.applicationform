@@ -5,6 +5,9 @@ from osha.applicationform.config import PFG_FILE_UPLOAD_PREFIX
 from plone.i18n.locales.countries import countries
 from Products.CMFCore.utils import getToolByName
 from Products.Five.browser import BrowserView
+from StringIO import StringIO
+
+import zipfile
 
 
 class VacanciesView(BrowserView):
@@ -57,3 +60,37 @@ class PFGSaveDataAdapterWithFileUploadView(BrowserView):
             self.context.getParentNode()['uploads'].absolute_url(),
             file_uuid
         )
+
+
+class ExportSavedDataWithFiles(BrowserView):
+    """ View for exporting saved data and uploaded files. """
+
+    def __call__(self):
+        return self.download()
+
+    def download(self):
+        """Download the data in a zip package.
+
+        :type format: string
+        :returns: A stream of binary data of a ZIP file of all applications
+        :rtype: StringIO binary stream
+        """
+
+        output = StringIO()
+        zf = zipfile.ZipFile(output, mode='w')
+        filename = self.context.id
+
+        try:
+            zf.writestr('{0}.csv'.format(filename), self.context.get_csv())
+        finally:
+            zf.close()
+
+        self.context.REQUEST.response.setHeader(
+            "Content-Type",
+            "application/zip"
+        )
+        self.context.REQUEST.response.setHeader(
+            'Content-Disposition',
+            "attachment; filename=%s.zip" % filename
+        )
+        return output.getvalue()

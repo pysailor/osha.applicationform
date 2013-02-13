@@ -4,6 +4,8 @@
     xmlns:plone="http://namespaces.plone.org/plone"
     i18n_domain="osha.applicationform">
 
+    <include package="Products.CMFCore" />
+
     <!-- Publish static files -->
     <browser:resourceDirectory
        name="osha.applicationform"
@@ -37,6 +39,13 @@
        class=".views.PFGSaveDataAdapterWithFileUploadView"
        template="templates/savedata_tabview.pt"
        permission="zope2.View"
+       />
+
+    <browser:page
+       for="osha.applicationform.interfaces.IPFGSaveDataAdapterWithFileUpload"
+       name="osh-export-data"
+       class=".views.ExportSavedDataWithFiles"
+       permission="cmf.ManagePortal"
        />
 
 </configure>

@@ -137,5 +137,18 @@ class PFGSaveDataAdapterWithFileUpload(FormSaveDataAdapter):
 
         self._addDataRow(data)
 
+    def get_csv(self):
+        """Return saved data in csv format."""
+
+        if getattr(self, 'UseColumnNames', False):
+            delimiter = self.csvDelimiter()
+            res = "%s\n" % delimiter.join(self.getColumnNames())
+            if isinstance(res, unicode):
+                res = res.encode(self.getCharset())
+        else:
+            res = ''
+
+        return '%s%s' % (res, self.getSavedFormInputForEdit())
+
 
 atapi.registerType(PFGSaveDataAdapterWithFileUpload, PROJECTNAME)

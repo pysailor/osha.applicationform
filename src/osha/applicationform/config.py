@@ -9,7 +9,7 @@ ADD_PERMISSIONS = {
 }
 
 # used to identify file in the results row
-PFG_FILE_UPLOAD_PREFIX = 'pfg_file_upload'
+PFG_FILE_UPLOAD_PREFIX = 'pfg_file_upload-'
 
 # source: http://www.guavastudios.com/nationality-list.htm
 # XXX: I'm not sure if it's 100% correct

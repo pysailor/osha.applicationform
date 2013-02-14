@@ -83,7 +83,8 @@
                 <div metal:use-macro="here/batch_macros/macros/navigation" />
             </tal:block>
 
-            <table class="listing">
+            <table class="listing"
+                   tal:define="colnames here/getColumnNames;">
                 <thead>
                     <tr>
                         <th>#</th>
@@ -98,9 +99,10 @@
                                            record_id python:row[0]">
                         <td style="text-align: center" tal:content="index" />
                         <td tal:repeat="cell python:row[1]">
-                            <tal:cell define="is_file python: cell.startswith('pfg_file_upload')">
+                            <tal:cell define="is_file python: cell.startswith('pfg_file_upload');
+                                              cell_index repeat/cell/index;">
                               <a tal:condition="is_file"
-                                 tal:attributes="href python: view.get_file_url(cell)" i18n:translate="label_view_file">view file</a>
+                                 tal:attributes="href python: view.get_file_url(colnames[cell_index], cell)" i18n:translate="label_view_file">view file</a>
                               <span tal:condition="not:is_file"
                                     tal:replace="cell">cell</span>
                             </tal:cell>

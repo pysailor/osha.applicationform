@@ -50,15 +50,20 @@ class PFGSaveDataAdapterWithFileUploadView(BrowserView):
     def __call__(self):
         return self.index()
 
-    def get_file_url(self, file_id):
-        """ Return url of the uploaded file.
+    def get_file_url(self, field_name, submission_id):
+        """ Return link to the uploaded file.
+
+        :param field_name: name of the field that we want to fetch the file
+            url for
+        :submission_id: id of the submission
         """
         # We need the file prefix to identify the file in the results row.
-        file_uuid = file_id.split(PFG_FILE_UPLOAD_PREFIX + '-')[1]
+        submission_uuid = submission_id.split(PFG_FILE_UPLOAD_PREFIX)[1]
 
-        return "%s/%s/application/view" % (
+        return "{0}/{1}/{2}/view".format(
             self.context.getParentNode()['uploads'].absolute_url(),
-            file_uuid
+            submission_uuid,
+            field_name
         )
 
 

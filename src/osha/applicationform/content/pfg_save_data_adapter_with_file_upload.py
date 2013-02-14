@@ -118,8 +118,7 @@ class PFGSaveDataAdapterWithFileUpload(FormSaveDataAdapter):
                         id=field_name,
                         file=file_obj
                     )
-                    data.append(
-                        '%s-%s' % (PFG_FILE_UPLOAD_PREFIX, submission_uuid))
+                    data.append(PFG_FILE_UPLOAD_PREFIX + submission_uuid)
             elif not f.isLabel():
                 val = REQUEST.form.get(f.fgField.getName(), '')
                 if not type(val) in StringTypes:

@@ -76,17 +76,28 @@ class ExportSavedDataWithFiles(BrowserView):
     def download(self):
         """Download the data in a zip package.
 
-        :type format: string
-        :returns: A stream of binary data of a ZIP file of all applications
+        :returns: ZIP file with saved data in excel format and uploaded files
         :rtype: StringIO binary stream
         """
 
         output = StringIO()
         zf = zipfile.ZipFile(output, mode='w')
         filename = self.context.id
+        uploads = self.context.getParentNode()['uploads']
 
         try:
-            zf.writestr('{0}.csv'.format(filename), self.context.get_csv())
+            # create an xls file
+            zf.writestr(
+                '{0}.xls'.format(filename), self.context.get_excel_data())
+
+            # add uploaded files
+            for folder in uploads.values():
+                for upload in folder.values():
+                    zf.writestr(
+                        'uploads/{0}/{1}'.format(
+                            folder.id, upload.getFilename()),
+                        upload.data
+                    )
         finally:
             zf.close()
 

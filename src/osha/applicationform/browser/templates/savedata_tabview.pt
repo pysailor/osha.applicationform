@@ -51,12 +51,21 @@
                 <a href=""
                    tal:attributes="href string:${here/absolute_url}/download">
                     <img src="" tal:define="icon python:here.getIcon(1)" tal:attributes="src string:${portal_url}/${icon}" alt="" />
-                    <tal:block i18n:translate="label_click_to_get_input" i18n:domain="ploneformgen">
-                        Click here to get the saved input
+                    <tal:block i18n:translate="label_export_csv" i18n:domain="osha.applicationform">
+                        Export to csv
                     </tal:block>
                 </a>
             </p>
 
+            <p>
+                <a href=""
+                   tal:attributes="href string:${here/absolute_url}/@@osh-export-data">
+                    <img src="" tal:define="icon python:here.getIcon(1)" tal:attributes="src string:${portal_url}/${icon}" alt="" />
+                    <tal:block i18n:translate="label_export_excel" i18n:domain="osha.applicationform">
+                        Export to excel (with uploaded files)
+                    </tal:block>
+                </a>
+            </p>
             <small class="discreet">
                 <span tal:condition="exists: here/itemsSaved"
                       i18n:translate="items_saved"

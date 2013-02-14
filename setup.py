@@ -48,6 +48,7 @@ setup(
         'Products.PFGDataGrid',
         'Products.PublicJobVacancy',
         'setuptools',
+        'xlwt',
     ],
     extras_require={
         'test': [

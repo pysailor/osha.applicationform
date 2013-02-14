@@ -14,6 +14,9 @@ from Products.CMFPlone.utils import safe_hasattr
 from Products.PloneFormGen.config import LP_SAVE_TO_CANONICAL
 from Products.PloneFormGen.content.saveDataAdapter import FormSaveDataAdapter
 from types import StringTypes
+from xlwt import easyxf
+from xlwt import Formula
+from xlwt import Workbook
 from zope.interface import implements
 from ZPublisher.HTTPRequest import FileUpload
 
@@ -136,7 +139,7 @@ class PFGSaveDataAdapterWithFileUpload(FormSaveDataAdapter):
 
         self._addDataRow(data)
 
-    def get_csv(self):
+    def get_csv_data(self):
         """Return saved data in csv format."""
 
         if getattr(self, 'UseColumnNames', False):
@@ -148,6 +151,62 @@ class PFGSaveDataAdapterWithFileUpload(FormSaveDataAdapter):
             res = ''
 
         return '%s%s' % (res, self.getSavedFormInputForEdit())
+
+    def get_excel_data(self):
+        """Return saved data in excel format.
+
+        File columns contain links to uploaded files. File structure of the
+        exported excel file and accompanying files should be like this:
+
+        file.xls
+        uploads
+        |
+        |--submission1_id
+           |
+           |--some_file.txt
+           |
+           ...
+        |
+        |---submission2_id
+        |
+        ...
+
+        :returns: Field data in excel format
+        :rtype: Excel Workbook in binary format
+        """
+
+        book = Workbook()
+        sheet = book.add_sheet('Sheet-{0}'.format(self.id))
+        uploads = self.getParentNode()['uploads']
+        data = [self.getColumnNames()] + [i for i in self.getSavedFormInput()]
+
+        for rowx, row in enumerate(data):
+            for colx, col in enumerate(row):
+
+                # handle file uploads
+                if col.startswith(PFG_FILE_UPLOAD_PREFIX):
+                    submission_uuid = col.split(PFG_FILE_UPLOAD_PREFIX)[1]
+
+                    # for now we take only the first file in the folder
+                    # XXX: make it work also for multiple uploads per
+                    # submission
+                    upload = uploads[submission_uuid].values()[0]
+                    file_path = 'uploads/{0}/{1}'.format(
+                        submission_uuid,
+                        upload.getFilename()
+                    )
+
+                    # add a relative link to the file
+                    # XXX: doesn't seem to work in LibreOffice, only Excel
+                    col = Formula(
+                        'HYPERLINK("{0}";"view file")'.format(file_path))
+                    style = easyxf('font: underline single, color blue;')
+
+                    sheet.write(rowx, colx, col, style)
+                else:
+                    sheet.write(rowx, colx, col)
+
+        return book.get_biff_data()
 
 
 atapi.registerType(PFGSaveDataAdapterWithFileUpload, PROJECTNAME)

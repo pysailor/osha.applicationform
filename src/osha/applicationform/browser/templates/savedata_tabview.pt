@@ -109,9 +109,15 @@
                         <td style="text-align: center" tal:content="index" />
                         <td tal:repeat="cell python:row[1]">
                             <tal:cell define="is_file python: cell.startswith('pfg_file_upload');
-                                              cell_index repeat/cell/index;">
-                              <a tal:condition="is_file"
-                                 tal:attributes="href python: view.get_file_url(colnames[cell_index], cell)" i18n:translate="label_view_file">view file</a>
+                                              cell_index repeat/cell/index;
+                                              file_url python: is_file and view.get_file_url(colnames[cell_index], cell);">
+                              <a tal:condition="python:is_file and file_url"
+                                 tal:attributes="href file_url"
+                                 i18n:translate="label_view_file">
+                                view file</a>
+                              <span tal:condition="python:is_file and not file_url"
+                                    i18n:translate="label_file_deleted">
+                                file deleted</span>
                               <span tal:condition="not:is_file"
                                     tal:replace="cell">cell</span>
                             </tal:cell>

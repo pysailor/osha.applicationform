@@ -57,14 +57,16 @@ class PFGSaveDataAdapterWithFileUploadView(BrowserView):
             url for
         :submission_id: id of the submission
         """
+
         # We need the file prefix to identify the file in the results row.
         submission_uuid = submission_id.split(PFG_FILE_UPLOAD_PREFIX)[1]
+        uploads = self.context.getParentNode().get('uploads', None)
 
-        return "{0}/{1}/{2}/view".format(
-            self.context.getParentNode()['uploads'].absolute_url(),
-            submission_uuid,
-            field_name
-        )
+        if uploads:
+            return "{0}/{1}/{2}/view".format(
+                uploads.absolute_url(), submission_uuid, field_name)
+        else:
+            return None
 
 
 class ExportSavedDataWithFiles(BrowserView):

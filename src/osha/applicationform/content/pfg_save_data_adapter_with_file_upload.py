@@ -76,29 +76,10 @@ class PFGSaveDataAdapterWithFileUpload(FormSaveDataAdapter):
                     target.onSuccess(fields, REQUEST, loopstop=True)
                     return
 
-        # make up a new random uuid, regardless of what might have been sent
-        submission_uuid = str(uuid.uuid4())  # uuid4 = random UUID
+        # create a folder for uploaded files
+        file_folder = self._create_submission_folder()
+        submission_uuid = file_folder.id
         REQUEST.form['submission_uuid'] = submission_uuid
-
-        # if the uploads folder does not yet exist, it needs to be created
-        form_folder = self.getParentNode()
-        uploads_folder_name = "uploads"
-
-        uploads_folder = form_folder.get(uploads_folder_name)
-        if not uploads_folder:
-            uploads_folder = plone_api.content.create(
-                container=form_folder,
-                type="Folder",
-                id=uploads_folder_name,
-            )
-
-        # uploaded files have to be stored separately, so create a folder
-        # for storing files uploaded by this form submission
-        file_folder = plone_api.content.create(
-            container=uploads_folder,
-            type="Folder",
-            id=submission_uuid,
-        )
 
         data = []
         for f in fields:
@@ -138,6 +119,32 @@ class PFGSaveDataAdapterWithFileUpload(FormSaveDataAdapter):
                     data.append(getattr(REQUEST, f, ''))
 
         self._addDataRow(data)
+
+    def _create_submission_folder(self):
+        """Create a folder for this submission that will hold uploaded files.
+        """
+        # make up a new random uuid, regardless of what might have been sent
+        submission_uuid = str(uuid.uuid4())  # uuid4 = random UUID
+
+        # if the uploads folder does not yet exist, it needs to be created
+        form_folder = self.getParentNode()
+        uploads_folder_name = "uploads"
+
+        uploads_folder = form_folder.get(uploads_folder_name)
+        if not uploads_folder:
+            uploads_folder = plone_api.content.create(
+                container=form_folder,
+                type="Folder",
+                id=uploads_folder_name,
+            )
+
+        # uploaded files have to be stored separately, so create a folder
+        # for storing files uploaded by this form submission
+        return plone_api.content.create(
+            container=uploads_folder,
+            type="Folder",
+            id=submission_uuid,
+        )
 
     def get_csv_data(self):
         """Return saved data in csv format."""

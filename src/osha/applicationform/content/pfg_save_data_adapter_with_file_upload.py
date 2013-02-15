@@ -13,6 +13,7 @@ from Products.CMFCore.permissions import View
 from Products.CMFPlone.utils import safe_hasattr
 from Products.PloneFormGen.config import LP_SAVE_TO_CANONICAL
 from Products.PloneFormGen.content.saveDataAdapter import FormSaveDataAdapter
+from StringIO import StringIO
 from types import StringTypes
 from xlwt import easyxf
 from xlwt import Formula
@@ -21,6 +22,7 @@ from zope.interface import implements
 from ZPublisher.HTTPRequest import FileUpload
 
 import uuid
+import zipfile
 
 PFGSaveDataAdapterWithFileUploadSchema = FormSaveDataAdapter.schema.copy() + \
     atapi.Schema((
@@ -214,6 +216,36 @@ class PFGSaveDataAdapterWithFileUpload(FormSaveDataAdapter):
                     sheet.write(rowx, colx, col)
 
         return book.get_biff_data()
+
+    def get_data_zipped(self):
+        """Return the data in a zip package.
+
+        :returns: ZIP file with saved data in excel format and uploaded files
+        :rtype: StringIO binary stream
+        """
+
+        output = StringIO()
+        zf = zipfile.ZipFile(output, mode='w')
+        filename = self.id
+        uploads = self.getParentNode()['uploads']
+
+        try:
+            # create an xls file
+            zf.writestr(
+                '{0}.xls'.format(filename), self.get_excel_data())
+
+            # add uploaded files
+            for folder in uploads.values():
+                for upload in folder.values():
+                    zf.writestr(
+                        'uploads/{0}/{1}'.format(
+                            folder.id, upload.getFilename()),
+                        upload.data
+                    )
+        finally:
+            zf.close()
+
+        return output.getvalue()
 
 
 atapi.registerType(PFGSaveDataAdapterWithFileUpload, PROJECTNAME)

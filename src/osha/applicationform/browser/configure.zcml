@@ -48,4 +48,11 @@
        permission="cmf.ManagePortal"
        />
 
+    <browser:page
+       for="osha.applicationform.interfaces.IPFGSaveDataAdapterWithFileUpload"
+       name="osh-send-data"
+       class=".views.SendSavedDataWithFiles"
+       permission="cmf.ManagePortal"
+       />
+
 </configure>

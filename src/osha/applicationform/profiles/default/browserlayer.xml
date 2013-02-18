@@ -1,0 +1,6 @@
+<layers>
+  <layer
+      name="osha.applicationform.layer"
+      interface="osha.applicationform.interfaces.IOshaApplicationFormLayer"
+      />
+</layers>

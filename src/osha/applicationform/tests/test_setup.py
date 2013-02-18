@@ -27,6 +27,13 @@ class TestInstall(IntegrationTestCase):
         self.installer.uninstallProducts(['osha.applicationform'])
         self.failIf(self.installer.isProductInstalled('osha.applicationform'))
 
+    # browserlayer.xml
+    def test_browserlayer(self):
+        """Test that IOshaApplicationForm is registered."""
+        from osha.applicationform.interfaces import IOshaApplicationFormLayer
+        from plone.browserlayer import utils
+        self.assertIn(IOshaApplicationFormLayer, utils.registered_layers())
+
     def test_folder_addable(self):
         """Test if Folder type can be created inside a FormFolder."""
         types = api.portal.get_tool('portal_types')

@@ -49,6 +49,7 @@ setup(
         'Products.PublicJobVacancy',
         'setuptools',
         'xlwt',
+        'z3c.jbot',
     ],
     extras_require={
         'test': [

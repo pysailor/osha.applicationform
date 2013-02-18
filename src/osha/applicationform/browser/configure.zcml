@@ -12,22 +12,27 @@
        directory="static"
        />
 
+    <!-- Set overrides folder  -->
+    <include package="z3c.jbot" file="meta.zcml" />
+    <browser:jbot directory="template-overrides"
+                  layer="osha.applicationform.interfaces.IOshaApplicationFormLayer" />
+
     <browser:page
-       for="Products.PloneFormGen.interfaces.IPloneFormGenField"
+       for="*"
        name="vacancies-helper"
        class=".views.VacanciesView"
        permission="zope2.View"
        />
 
     <browser:page
-       for="Products.PloneFormGen.interfaces.IPloneFormGenField"
+       for="*"
        name="countries-helper"
        class=".views.CountriesView"
        permission="zope2.View"
        />
 
     <browser:page
-       for="Products.PloneFormGen.interfaces.IPloneFormGenField"
+       for="*"
        name="nationalities-helper"
        class=".views.NationalitiesView"
        permission="zope2.View"

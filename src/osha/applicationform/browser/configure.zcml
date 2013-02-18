@@ -33,6 +33,13 @@
 
     <browser:page
        for="*"
+       name="languages-helper"
+       class=".views.LanguagesView"
+       permission="zope2.View"
+       />
+
+    <browser:page
+       for="*"
        name="nationalities-helper"
        class=".views.NationalitiesView"
        permission="zope2.View"

@@ -9,8 +9,10 @@ from osha.applicationform.config import NATIONALITIES
 from osha.applicationform.config import PFG_FILE_UPLOAD_PREFIX
 from plone import api
 from plone.i18n.locales.countries import countries
+from plone.i18n.locales.languages import contentlanguages
 from Products.CMFCore.utils import getToolByName
 from Products.Five.browser import BrowserView
+from Products.PFGDataGrid.vocabulary import SimpleDynamicVocabulary
 
 import logging
 
@@ -47,6 +49,15 @@ class CountriesView(BrowserView):
 
     def __call__(self):
         return sorted(countries.getCountryListing(), key=lambda x: x[1])
+
+
+class LanguagesView(BrowserView):
+    """Helper view to get a list of languages."""
+
+    def __call__(self):
+        languages = sorted(
+            [lang[1] for lang in contentlanguages.getLanguageListing()])
+        return SimpleDynamicVocabulary(languages)
 
 
 class NationalitiesView(BrowserView):

@@ -29,12 +29,12 @@
         />
 
     <!-- Register the installation GenericSetup extension profile -->
-    <genericsetup:registerProfile
+    <!--genericsetup:registerProfile
         name="content"
         title="osha.applicationform (import application form)"
         directory="profiles/content"
         description='Import HR Application Form with all the fields'
         provides="Products.GenericSetup.interfaces.EXTENSION"
-        />
+        /-->
 
 </configure>

@@ -37,6 +37,12 @@ Steps for importing the form:
 3. Select file "hr-application-form.tar.gz"
 4. Check "Remove Existing Form Items?"
 5. Click "import"
+6. There are some manual steps needed to make the languages field work
+properly:
+* click on 'Contents' tab on the form folder, then on 'Languages' field
+* click 'Edit', then check options 'Allow Row Deletion', 'Allow Row
+Insertion' and 'Allow Row Reordering'.
+* click 'Save'
 
 
 Requirements

@@ -5,10 +5,10 @@ from email.mime.multipart import MIMEMultipart
 from datetime import datetime
 from DateTime import DateTime
 from osha.applicationform import _
+from osha.applicationform.config import COUNTRIES
 from osha.applicationform.config import NATIONALITIES
 from osha.applicationform.config import PFG_FILE_UPLOAD_PREFIX
 from plone import api
-from plone.i18n.locales.countries import countries
 from plone.i18n.locales.languages import contentlanguages
 from Products.CMFCore.utils import getToolByName
 from Products.Five.browser import BrowserView
@@ -48,7 +48,7 @@ class CountriesView(BrowserView):
     """Helper view to get a list of countries."""
 
     def __call__(self):
-        return sorted(countries.getCountryListing(), key=lambda x: x[1])
+        return [(item.lower(), item) for item in COUNTRIES]
 
 
 class LanguagesView(BrowserView):

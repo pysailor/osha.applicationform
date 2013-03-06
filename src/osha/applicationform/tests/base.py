@@ -23,15 +23,21 @@ class OshaApplicationformLayer(PloneSandboxLayer):
         """Set up Zope."""
         # Load ZCML
         import osha.applicationform
+        import Products.PublicJobVacancy
+        import Products.DataGridField
         import Products.PFGDataGrid
+        import Products.RichDocument
         self.loadZCML(package=osha.applicationform)
+        self.loadZCML(package=Products.PublicJobVacancy)
         self.loadZCML(package=Products.DataGridField)
         self.loadZCML(package=Products.PFGDataGrid)
+        self.loadZCML(package=Products.RichDocument)
         z2.installProduct(app, 'osha.applicationform')
         z2.installProduct(app, 'Products.PublicJobVacancy')
         z2.installProduct(app, 'Products.DataGridField')
         z2.installProduct(app, 'Products.PFGDataGrid')
         z2.installProduct(app, 'Products.PloneFormGen')
+        z2.installProduct(app, 'Products.RichDocument')
 
     def setUpPloneSite(self, portal):
         """Set up Plone."""
@@ -55,6 +61,7 @@ class OshaApplicationformLayer(PloneSandboxLayer):
         z2.uninstallProduct(app, 'Products.DataGridField')
         z2.uninstallProduct(app, 'Products.PFGDataGrid')
         z2.uninstallProduct(app, 'Products.PloneFormGen')
+        z2.uninstallProduct(app, 'Products.RichDocument')
 
 
 FIXTURE = OshaApplicationformLayer()

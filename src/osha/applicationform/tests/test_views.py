@@ -118,7 +118,7 @@ class TestVocabularyViews(IntegrationTestCase):
         # just test that we get the results without error and that the number
         # of results is reasonably large (because the list could change in
         # the future and we don't want to worry about it)
-        self.assertTrue(len(results) > 100)
+        self.assertTrue(len(results) > 20)
 
     def test_languages_view(self):
         """Test if we get a list of lanugages."""
@@ -136,7 +136,7 @@ class TestVocabularyViews(IntegrationTestCase):
         # just test that we get the results without error and that the number
         # of results is reasonably large (because the list could change in
         # the future and we don't want to worry about it)
-        self.assertTrue(len(results) > 100)
+        self.assertTrue(len(results) > 20)
 
 
 class TestPFGSaveDataAdapterWithFileUploadView(IntegrationTestCase):

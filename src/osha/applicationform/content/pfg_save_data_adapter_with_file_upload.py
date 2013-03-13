@@ -6,10 +6,10 @@ from DateTime import DateTime
 from osha.applicationform.config import PFG_FILE_UPLOAD_PREFIX
 from osha.applicationform.config import PROJECTNAME
 from osha.applicationform.interfaces import IPFGSaveDataAdapterWithFileUpload
-from plone import api as plone_api
 from Products.Archetypes import atapi
 from Products.ATContentTypes.content import schemata
 from Products.CMFCore.permissions import View
+from Products.CMFPlone.utils import _createObjectByType
 from Products.CMFPlone.utils import safe_hasattr
 from Products.PloneFormGen.config import LP_SAVE_TO_CANONICAL
 from Products.PloneFormGen.content.saveDataAdapter import FormSaveDataAdapter
@@ -98,12 +98,8 @@ class PFGSaveDataAdapterWithFileUpload(FormSaveDataAdapter):
                     isinstance(file_obj, FileUpload) and
                     file_obj.filename != ''
                 ):
-                    plone_api.content.create(
-                        container=file_folder,
-                        type="File",
-                        id=field_name,
-                        file=file_obj
-                    )
+                    _createObjectByType(
+                        "File", file_folder, id=field_name, file=file_obj)
                     data.append(PFG_FILE_UPLOAD_PREFIX + submission_uuid)
             elif not f.isLabel():
                 val = REQUEST.form.get(f.fgField.getName(), '')
@@ -131,22 +127,16 @@ class PFGSaveDataAdapterWithFileUpload(FormSaveDataAdapter):
         # if the uploads folder does not yet exist, it needs to be created
         form_folder = self.getParentNode()
         uploads_folder_name = "uploads"
-
         uploads_folder = form_folder.get(uploads_folder_name)
+
         if not uploads_folder:
-            uploads_folder = plone_api.content.create(
-                container=form_folder,
-                type="Folder",
-                id=uploads_folder_name,
-            )
+            uploads_folder = _createObjectByType(
+                "Folder", form_folder, id=uploads_folder_name)
 
         # uploaded files have to be stored separately, so create a folder
         # for storing files uploaded by this form submission
-        return plone_api.content.create(
-            container=uploads_folder,
-            type="Folder",
-            id=submission_uuid,
-        )
+        return _createObjectByType(
+            "Folder", uploads_folder, id=submission_uuid)
 
     def get_csv_data(self):
         """Return saved data in csv format."""

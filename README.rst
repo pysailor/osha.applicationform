@@ -33,11 +33,12 @@ form with all the fields.
 Steps for importing the form:
 
 1. Create a new Form Folder
-2. Click on "Actions -> Import"
-3. Select file "hr-application-form.tar.gz"
-4. Check "Remove Existing Form Items?"
-5. Click "import"
-6. There are some manual steps needed to make the languages field work
+2. Change the form view by clicking on "Display -> HR Application Form"
+3. Click on "Actions -> Import"
+4. Select file "hr-application-form.tar.gz"
+5. Check "Remove Existing Form Items?"
+6. Click "import"
+7. There are some manual steps needed to make the languages field work
 properly:
 * click on 'Contents' tab on the form folder, then on 'Languages' field
 * click 'Edit', then check options 'Allow Row Deletion', 'Allow Row

@@ -7,4 +7,9 @@
      <element value="PFGSaveDataAdapterWithFileUpload"/>
      <element value="Folder"/>
  </property>
+  <property name="default_view">fg_base_view_p3</property>
+  <property name="view_methods">
+    <element value="fg_base_view_p3"/>
+    <element value="osh-application-form" />
+  </property>
 </object>

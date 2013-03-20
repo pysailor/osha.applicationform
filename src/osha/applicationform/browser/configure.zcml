@@ -12,11 +12,6 @@
        directory="static"
        />
 
-    <!-- Set overrides folder  -->
-    <include package="z3c.jbot" file="meta.zcml" />
-    <browser:jbot directory="template-overrides"
-                  layer="osha.applicationform.interfaces.IOshaApplicationFormLayer" />
-
     <browser:page
        for="*"
        name="vacancies-helper"

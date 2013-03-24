@@ -1,6 +1,9 @@
 # -*- coding: utf-8 -*-
 """Global constants."""
 
+from os import getcwd
+
+
 PROJECTNAME = 'osha.applicationform'
 
 ADD_PERMISSIONS = {
@@ -76,3 +79,6 @@ NATIONALITIES = [
     'Spanish',
     'Swedish',
 ]
+
+DB_URL = getcwd() + '/var/osha_applicationform.sqlite'
+DB_TYPE = 'sqlite'

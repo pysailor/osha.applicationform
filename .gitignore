@@ -16,3 +16,5 @@ parts
 var
 src/Products.*
 src/plone.api
+src/slc.rdbploneformgenadapter
+src/collective.lead

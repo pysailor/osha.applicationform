@@ -48,6 +48,7 @@ setup(
         'Products.PFGDataGrid',
         'Products.PublicJobVacancy',
         'setuptools',
+        'slc.rdbploneformgenadapter',
         'xlwt',
         'z3c.jbot',
     ],

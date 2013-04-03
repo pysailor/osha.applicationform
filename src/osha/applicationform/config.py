@@ -82,3 +82,5 @@ NATIONALITIES = [
 
 DB_URL = getcwd() + '/var/osha_applicationform.sqlite'
 DB_TYPE = 'sqlite'
+
+OSHA_HR_EMAIL = 'enter email address here'

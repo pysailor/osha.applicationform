@@ -40,6 +40,7 @@ setup(
     install_requires=[
         'archetypes.schemaextender',
         'five.grok',
+        'openpyxl',
         'Pillow',
         'Plone',
         'plone.api',

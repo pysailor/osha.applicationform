@@ -77,4 +77,11 @@
        permission="cmf.ManagePortal"
        />
 
+    <browser:page
+      name="osh-send-data-form"
+      for="slc.rdbploneformgenadapter.interfaces.IRDBPloneFormGenAdapterContent"
+      permission="cmf.ManagePortal"
+      class=".forms.SendJobVacancyDataForm"
+      />
+
 </configure>

@@ -83,4 +83,7 @@ NATIONALITIES = [
 DB_URL = getcwd() + '/var/osha_applicationform.sqlite'
 DB_TYPE = 'sqlite'
 
+# job vacancy rdb column id
+JOB_VACANCY_ID = 'job_vacancy'
+
 OSHA_HR_EMAIL = 'enter email address here'

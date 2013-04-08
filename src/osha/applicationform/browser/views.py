@@ -172,13 +172,13 @@ class SendSavedDataWithFiles(BrowserView):
         zipfile = ZipFile(output, mode='w')
 
         try:
-            self.write_to_zip(zipfile, vacancies)
+            self._write_to_zip(zipfile, vacancies)
         finally:
             zipfile.close()
 
         return output.getvalue()
 
-    def write_to_zip(self, zipfile, vacancies=None):
+    def _write_to_zip(self, zipfile, vacancies=None):
         """Write form data to excel file and zip it together with uploaded
         files.
 
@@ -196,11 +196,14 @@ class SendSavedDataWithFiles(BrowserView):
         slc.rdbploneformgenadapter.content.content.py
 
         :param zipfile: ZipFile instance that will hold the data
+        :param vacancies: a list of job vacancies to fetch the data for. If
+            no job vacancies are provided, return data for all job vacancies.
         """
         form = self.context.getParentNode()
         form_table_name = cleanString(form.id)
         db_utility_name = self.context.db_utility_name
 
+        # get the rdb connection
         try:
             db = getUtility(IDatabase, db_utility_name)
             connection = db.connection.engine.connect()
@@ -215,11 +218,12 @@ class SendSavedDataWithFiles(BrowserView):
                 grid_fields.append(key)
             elif(form[key].portal_type == 'FormFileField'):
                 file_fields.append(key)
-        if not vacancies:
+
+        if not vacancies:  # fetch data for all job vacancies
             form_data = connection.execute(
                 "SELECT * FROM {0}".format(form_table_name)
             )
-        else:
+        else:  # fetch data for selected job vacancies
             form_data = connection.execute(
                 "SELECT * FROM {0} WHERE {1} IN ({2})".format(
                     form_table_name,
@@ -233,6 +237,7 @@ class SendSavedDataWithFiles(BrowserView):
         form_keys = form_data.keys()
         all_form_keys = form_keys + grid_fields + file_fields
 
+        # Create an excel workbook
         book = Workbook()
         sheet = book.worksheets[0]
         sheet.default_column_dimension.auto_size = True

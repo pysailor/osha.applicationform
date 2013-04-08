@@ -1,6 +1,6 @@
 from osha.applicationform import _
 from osha.applicationform.vocabulary import OshaJobVacanciesVocabulary
-from Products.statusmessages.interfaces import IStatusMessage
+from plone import api
 from z3c.form import button
 from z3c.form import form
 from z3c.form import field
@@ -32,23 +32,31 @@ class SendJobVacancyDataForm(form.Form):
 
         vacancies_list = [i for i in data['vacancies']]
         if not vacancies_list:
-            IStatusMessage(self.request).addStatusMessage(
-                "Please select a list of job vacancies.", 'error')
+            api.portal.show_message(
+                message="Please select a list of job vacancies.",
+                request=self.request,
+                type='error'
+            )
             return False
 
         view = self.context.restrictedTraverse('@@osh-send-data')
 
         try:
             view.send_data(vacancies=vacancies_list)
-            IStatusMessage(self.request).addStatusMessage(
-                "Applications have been sent for these job "
-                "vacancies: {0}".format(', '.join(vacancies_list)), 'info'
+            api.portal.show_message(
+                message="Applications have been sent for these job " \
+                "vacancies: {0}".format(', '.join(vacancies_list)),
+                request=self.request,
+                type='info'
             )
         except:
-            IStatusMessage(self.request).addStatusMessage(
-                "Error sending applications. Please contact site "
-                "administrator.", 'error')
             logger.exception(
                 'Error sending applications for job vacancies: {0} '.format(
                     ','.join(vacancies_list))
+            )
+            api.portal.show_message(
+                message="Error sending applications. Please contact site " \
+                "administrator.",
+                request=self.request,
+                type='error'
             )

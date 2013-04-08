@@ -19,6 +19,7 @@ from Products.CMFCore.utils import getToolByName
 from Products.Five.browser import BrowserView
 from Products.PFGDataGrid.vocabulary import SimpleDynamicVocabulary
 from slc.rdbploneformgenadapter.utils import cleanString
+from sqlalchemy.exc import SQLAlchemyError
 from StringIO import StringIO
 from smtplib import SMTPRecipientsRefused
 from zipfile import ZipFile
@@ -161,7 +162,6 @@ class SendSavedDataWithFiles(BrowserView):
             'attachment',
             filename=self.context.getParentNode().id + '.zip'
         )
-
         attachment.set_payload(self.get_data_zipped(vacancies))
         encoders.encode_base64(attachment)
         msg.attach(attachment)
@@ -219,14 +219,10 @@ class SendSavedDataWithFiles(BrowserView):
 
         try:
             db = getUtility(IDatabase, db_utility_name)
-        except ComponentLookupError:
-            api.portal.show_message(
-                message="""There is a problem with database configuration,
-                contact site administrator""",
-                request=self.request,
-                type='error'
-            )
-        connection = db.connection.engine.connect()
+            connection = db.connection.engine.connect()
+        except (ComponentLookupError, SQLAlchemyError):
+            logger.exception('Error connecting to database.')
+            raise
 
         grid_fields = []
         file_fields = []
@@ -267,8 +263,7 @@ class SendSavedDataWithFiles(BrowserView):
         for row_count, table_row in enumerate(form_data.fetchall()):
             # write basic form fields
             for form_column_count, key in enumerate(form_keys):
-                cell = sheet.cell(row=row_count+1,
-                                  column=form_column_count)
+                cell = sheet.cell(row=row_count + 1, column=form_column_count)
                 cell.value = table_row[key]
             count = 1
 
@@ -290,8 +285,7 @@ class SendSavedDataWithFiles(BrowserView):
                     grid_field_string = grid_field_string[:-2] + '\n'
                 if grid_field_string:
                     cell = sheet.cell(
-                        row=row_count+1,
-                        column=form_column_count + count
+                        row=row_count + 1, column=form_column_count + count
                     )
                     cell.style.alignment.wrap_text = True
                     cell.value = grid_field_string[:-1]

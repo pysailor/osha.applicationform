@@ -15,5 +15,11 @@ class OshaJobVacanciesVocabulary(object):
             review_state='published',
             sort_on='effective',
         )
-        terms = [SimpleTerm(value=item.getId, token=item.getId, title=item.Title) for item in results]
+        terms = [
+            SimpleTerm(
+                value=item.getId,
+                token=item.getId,
+                title=item.Title
+            ) for item in results
+        ]
         return SimpleVocabulary(terms)

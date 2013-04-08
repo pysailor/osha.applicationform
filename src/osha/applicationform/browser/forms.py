@@ -44,7 +44,7 @@ class SendJobVacancyDataForm(form.Form):
         try:
             view.send_data(vacancies=vacancies_list)
             api.portal.show_message(
-                message="Applications have been sent for these job " \
+                message="Applications have been sent for these job "
                 "vacancies: {0}".format(', '.join(vacancies_list)),
                 request=self.request,
                 type='info'
@@ -55,7 +55,7 @@ class SendJobVacancyDataForm(form.Form):
                     ','.join(vacancies_list))
             )
             api.portal.show_message(
-                message="Error sending applications. Please contact site " \
+                message="Error sending applications. Please contact site "
                 "administrator.",
                 request=self.request,
                 type='error'

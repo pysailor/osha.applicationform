@@ -8,9 +8,7 @@ from DateTime import DateTime
 from logging import getLogger
 from openpyxl.workbook import Workbook
 from osha.applicationform import _
-from osha.applicationform.config import COUNTRIES
 from osha.applicationform.config import JOB_VACANCY_ID
-from osha.applicationform.config import NATIONALITIES
 from osha.applicationform.config import OSHA_HR_EMAIL
 from osha.applicationform.config import PFG_FILE_UPLOAD_PREFIX
 from plone import api
@@ -55,13 +53,6 @@ class VacanciesView(BrowserView):
                 if DateTime(datetime.now()) < item.getObject().deadline]
 
 
-class CountriesView(BrowserView):
-    """Helper view to get a list of countries."""
-
-    def __call__(self):
-        return [(item.lower(), item) for item in COUNTRIES]
-
-
 class LanguagesView(BrowserView):
     """Helper view to get a list of languages."""
 
@@ -69,13 +60,6 @@ class LanguagesView(BrowserView):
         languages = sorted(
             [lang[1] for lang in contentlanguages.getLanguageListing()])
         return SimpleDynamicVocabulary(languages)
-
-
-class NationalitiesView(BrowserView):
-    """Helper view to get a list of nationalities."""
-
-    def __call__(self):
-        return [(item.lower(), item) for item in NATIONALITIES]
 
 
 class PFGSaveDataAdapterWithFileUploadView(BrowserView):

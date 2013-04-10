@@ -18,5 +18,3 @@ PFG_FILE_UPLOAD_PREFIX = 'pfg_file_upload-'
 DB_URL = getcwd() + '/var/osha_applicationform.sqlite'
 DB_TYPE = 'sqlite'
 JOB_VACANCY_ID = 'job_vacancy'
-
-OSHA_HR_EMAIL = 'enter email address here'

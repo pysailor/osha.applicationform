@@ -9,7 +9,6 @@ from logging import getLogger
 from openpyxl.workbook import Workbook
 from osha.applicationform import _
 from osha.applicationform.config import JOB_VACANCY_ID
-from osha.applicationform.config import OSHA_HR_EMAIL
 from osha.applicationform.config import PFG_FILE_UPLOAD_PREFIX
 from plone import api
 from plone.i18n.locales.languages import contentlanguages
@@ -121,12 +120,19 @@ class SendSavedDataWithFiles(BrowserView):
             'portal_properties').site_properties
         email_charset = site_properties.getProperty('email_charset', 'utf-8')
         sender = portal.getProperty('email_from_address', '')
+        hr_to_address = site_properties.osha_properties.getProperty(
+            'hr_to_address'
+        )
+
+        if not hr_to_address:
+            raise ValueError('You need to enter HR email address in osha'
+                             'properites.')
 
         # create the container (outer) email message.
         msg = MIMEMultipart()
         msg['Subject'] = _(u'HR applications data')
         msg['From'] = sender
-        msg['To'] = OSHA_HR_EMAIL
+        msg['To'] = hr_to_address
 
         text = SEND_DATA_EMAIL_MESSAGE.format(
             portal.getProperty('title')).encode(email_charset, 'replace')
@@ -156,10 +162,10 @@ class SendSavedDataWithFiles(BrowserView):
         try:
             mailhost.send(msg, immediate=True)
         except SMTPRecipientsRefused:
-            logger.error('Error sending email to {0}'.format(OSHA_HR_EMAIL))
+            logger.error('Error sending email to {0}'.format(hr_to_address))
             raise SMTPRecipientsRefused('Recipient address rejected by server')
-        logger.info('Data sent to {0}'.format(OSHA_HR_EMAIL))
-        return 'Data sent to {0}'.format(OSHA_HR_EMAIL)
+        logger.info('Data sent to {0}'.format(hr_to_address))
+        return 'Data sent to {0}'.format(hr_to_address)
 
     def get_data_zipped(self, vacancies=None):
         """Return the data in a zip package.

@@ -48,6 +48,7 @@ setup(
         'Products.PloneFormGen',
         'Products.PFGDataGrid',
         'Products.PublicJobVacancy',
+        'psycopg2',
         'setuptools',
         'slc.rdbploneformgenadapter',
         'xlwt',

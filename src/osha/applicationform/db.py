@@ -1,12 +1,9 @@
 """Module that handles relational database connections and mappings."""
 
+from App.config import getConfiguration
 from collective.lead import Database
 from collective.lead.interfaces import IDatabase
 from five import grok
-from osha.applicationform.config import DB_TYPE
-from osha.applicationform.config import DB_URL
-
-import sqlalchemy as sa
 
 
 class OshaApplicationFormDB(grok.GlobalUtility, Database):
@@ -15,7 +12,14 @@ class OshaApplicationFormDB(grok.GlobalUtility, Database):
 
     @property
     def _url(self):
-        return sa.engine.url.URL(drivername=DB_TYPE, database=DB_URL)
+        """Return db connection string which we read from the environment."""
+        configuration = getConfiguration()
+        try:
+            url = configuration.product_config['osha.policy']['hr.database']
+        except (AttributeError, KeyError):
+            raise KeyError('No product config found! Cannot read hr.database '
+                  'connection string.')
+        return url
 
     def _setup_tables(self, metadata, tables):
         """XXX: We need to implement this method, because collective.lead

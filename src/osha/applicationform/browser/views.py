@@ -116,13 +116,12 @@ class SendSavedDataWithFiles(BrowserView):
 
     def send_data(self, vacancies=None):
         portal = api.portal.get()
-        site_properties = api.portal.get_tool(
-            'portal_properties').site_properties
-        email_charset = site_properties.getProperty('email_charset', 'utf-8')
+        portal_props = api.portal.get_tool('portal_properties')
+        email_charset = portal_props.site_properties.getProperty(
+            'email_charset', 'utf-8')
         sender = portal.getProperty('email_from_address', '')
-        hr_to_address = site_properties.osha_properties.getProperty(
-            'hr_to_address'
-        )
+        hr_to_address = portal_props.osha_properties.getProperty(
+            'hr_to_address')
 
         if not hr_to_address:
             raise ValueError('You need to enter HR email address in osha'

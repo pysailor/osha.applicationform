@@ -12,6 +12,7 @@ motivation letter via Web.
 * `Continuous Integration @ Travis-CI
   <http://travis-ci.org/syslabcom/osha.applicationform>`_
 
+
 Installation
 ============
 
@@ -32,19 +33,25 @@ form with all the fields.
 
 Steps for importing the form:
 
-1. Create a new Form Folder
+1. Create a new Form Folder named 'HR Application form' (it is important
+that the form id is 'hr-application-form' or 'hr_application_form' to make
+the rdb integration work)
 2. Change the form view by clicking on "Display -> HR Application Form"
 3. Click on "Actions -> Import"
 4. Select file "hr-application-form.tar.gz"
 5. Check "Remove Existing Form Items?"
 6. Click "import"
-7. There are some manual steps needed to make the languages field work
-properly:
-* click on 'Contents' tab on the form folder, then on 'Languages' field
-* click 'Edit', then check options 'Allow Row Deletion', 'Allow Row
-Insertion' and 'Allow Row Reordering'.
-* click 'Save'
 
+XXX: At the moment, there are some additional manual steps needed to make
+the form work properly:
+* Click on 'Add new -> RDBPloneFormGenAdapter' and enter
+``osha.applicationformdb`` in the 'Database utility name' field, then click
+'Save'
+* Click on 'Actions -> Rename' and rename the adapter to ``rdb-adapter``
+* Go back to the form and click on 'Contents' tab, then on 'Languages' field
+* Click 'Edit', then check options 'Allow Row Deletion', 'Allow Row
+Insertion' and 'Allow Row Reordering'
+* Click 'Save'
 
 Setting up RDB
 --------------
@@ -73,6 +80,7 @@ Requirements
 
     * `Plone <http://plone.org/>`_ 4.1 or newer
     * `PloneFormGen <http://plone.org/products/ploneformgen>`_ 1.7 or newer
+
 
 Usage
 =====

@@ -15,7 +15,8 @@ class OshaApplicationFormDB(grok.GlobalUtility, Database):
         """Return db connection string which we read from the environment."""
         configuration = getConfiguration()
         try:
-            url = configuration.product_config['osha.policy']['hr.database']
+            conf = configuration.product_config['osha.applicationform']
+            url = conf['hr.database']
         except (AttributeError, KeyError):
             raise KeyError('No product config found! Cannot read hr.database '
                   'connection string.')

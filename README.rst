@@ -46,6 +46,28 @@ Insertion' and 'Allow Row Reordering'.
 * click 'Save'
 
 
+Setting up RDB
+--------------
+
+HR Application Form uses relational database to store the data. There are two
+sql scripts in resources/, which should be used to create initial db
+structure. Currently sqlite and postgresql are supported.
+
+Instructions for creating tables in postgresql (you need to create a database
+beforehand)::
+
+    $ psql -d database_name -a -f hr_form_postgres.sql
+
+Then you need to set the connection string in your buildout::
+
+    [instance]
+    ...
+    zope-conf-additional =
+    <product-config osha.applicationform>
+        hr.database postgresql://username:password@ip/database_name'
+    </product-config>
+
+
 Requirements
 ============
 

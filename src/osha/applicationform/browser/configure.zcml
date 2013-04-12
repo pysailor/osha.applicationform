@@ -26,18 +26,11 @@
        permission="zope2.View"
        />
 
-    <browser:page
-       for="Products.PloneFormGen.interfaces.IPloneFormGenForm"
-       name="osh-application-form"
-       template="templates/application_form.pt"
-       permission="zope2.View"
-       />
-
     <browser:menuItem
         for="Products.PloneFormGen.interfaces.IPloneFormGenForm"
         menu="plone_displayviews"
         title="HR Application Form"
-        action="@@osh-application-form"
+        action="osha_applicationform"
         description="Form for managing applications"
         />
 

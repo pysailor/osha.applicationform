@@ -56,7 +56,7 @@ class LanguagesView(BrowserView):
     """Helper view to get a list of languages."""
 
     def __call__(self):
-        languages = sorted(
+        languages = [''] + sorted(
             [lang[1] for lang in contentlanguages.getLanguageListing()])
         return SimpleDynamicVocabulary(languages)
 
@@ -124,8 +124,8 @@ class SendSavedDataWithFiles(BrowserView):
             'hr_to_address')
 
         if not hr_to_address:
-            raise ValueError('You need to enter HR email address in osha'
-                             'properites.')
+            raise ValueError('You need to enter HR email address in osha '
+                             'properties.')
 
         # create the container (outer) email message.
         msg = MIMEMultipart()

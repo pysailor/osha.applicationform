@@ -75,7 +75,7 @@
     <metal:fill fill-slot="main">
       <metal:main define-macro="main"
                   tal:define="vacancies here/@@vacancies-helper;
-                              can_connect here/rdb-adapter/@@osh-test-rdb">
+                              can_connect here/@@osh-test-rdb">
 
         <div tal:replace="structure provider:plone.abovecontenttitle" />
 

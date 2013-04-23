@@ -69,9 +69,11 @@ class RDBTestConnection(BrowserView):
         return False, True otherwise.
         """
         try:
-            db = getUtility(IDatabase, self.context.db_utility_name)
+            rdb_adapter = self.context['rdb-adapter']
+            db = getUtility(IDatabase, rdb_adapter.db_utility_name)
             connection = db.connection.engine.connect()
         except:
+            logger.exception('Error connecting to rdb:')
             return False
         return True
 

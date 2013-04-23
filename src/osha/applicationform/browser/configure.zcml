@@ -35,6 +35,13 @@
         />
 
     <browser:page
+       for="Products.PloneFormGen.interfaces.IPloneFormGenForm"
+       name="osh-test-rdb"
+       class=".views.RDBTestConnection"
+       permission="zope2.View"
+       />
+
+    <browser:page
        for="osha.applicationform.interfaces.IPFGSaveDataAdapterWithFileUpload"
        name="osh-savedata-tabview"
        class=".views.PFGSaveDataAdapterWithFileUploadView"
@@ -47,13 +54,6 @@
        name="osh-export-data"
        class=".views.ExportSavedDataWithFiles"
        permission="cmf.ManagePortal"
-       />
-
-    <browser:page
-       for="slc.rdbploneformgenadapter.interfaces.IRDBPloneFormGenAdapterContent"
-       name="osh-test-rdb"
-       class=".views.RDBTestConnection"
-       permission="zope2.View"
        />
 
     <browser:page

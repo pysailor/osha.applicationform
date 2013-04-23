@@ -48,7 +48,14 @@
        class=".views.ExportSavedDataWithFiles"
        permission="cmf.ManagePortal"
        />
-    
+
+    <browser:page
+       for="slc.rdbploneformgenadapter.interfaces.IRDBPloneFormGenAdapterContent"
+       name="osh-test-rdb"
+       class=".views.RDBTestConnection"
+       permission="zope2.View"
+       />
+
     <browser:page
        for="slc.rdbploneformgenadapter.interfaces.IRDBPloneFormGenAdapterContent"
        name="osh-send-data"

@@ -61,6 +61,21 @@ class LanguagesView(BrowserView):
         return SimpleDynamicVocabulary(languages)
 
 
+class RDBTestConnection(BrowserView):
+    """Helper view to test if we can connect to the rdb."""
+
+    def __call__(self):
+        """Try to create a connection to the database. If connection fails,
+        return False, True otherwise.
+        """
+        try:
+            db = getUtility(IDatabase, self.context.db_utility_name)
+            connection = db.connection.engine.connect()
+        except:
+            return False
+        return True
+
+
 class PFGSaveDataAdapterWithFileUploadView(BrowserView):
     """View for displaying saved data (with links to uploaded files) and
     option to export the results.

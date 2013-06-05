@@ -4,6 +4,7 @@ from App.config import getConfiguration
 from collective.lead import Database
 from collective.lead.interfaces import IDatabase
 from five import grok
+from osha.applicationform.config import TEST_DB_SQL
 
 import logging
 import os
@@ -11,7 +12,6 @@ import sqlite3
 import tempfile
 
 logger = logging.getLogger('osha.applicationform.db')
-TEST_DB_PATH = '/resources/hr_form_sqlite.sql'
 
 
 class OshaApplicationFormDB(grok.GlobalUtility, Database):
@@ -70,12 +70,9 @@ class TestDB(grok.GlobalUtility, Database):
         if not self._db:
             return
         try:
-            path = os.getcwd() + TEST_DB_PATH
-            with open(path, 'r') as sql_file:
-                sql = sql_file.read().strip()
             conn = sqlite3.connect(self._db)
             cursor = conn.cursor()
-            cursor.executescript(sql)
+            cursor.executescript(TEST_DB_SQL)
             conn.commit()
         except:
             logger.exception(

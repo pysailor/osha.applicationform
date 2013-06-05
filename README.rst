@@ -80,6 +80,16 @@ Then you need to set the connection string in your buildout::
     </product-config>
 
 
+Using a test database
+---------------------
+
+For quick TTW testing purposes, you can also use a temp sqlite database that
+is created automatically in tmp/ directory on instance start (path to the
+database is written to the log). To use it, use the
+'osha.applicationform.testdb' utility instead of 'osha.applicationformdb'.
+You can change this on the RDB Action Adapter edit form.
+
+
 Requirements
 ============
 

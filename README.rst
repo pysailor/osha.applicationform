@@ -33,28 +33,27 @@ form with all the fields.
 
 Steps for importing the form:
 
-* Create a new Form Folder named 'HR Application form' (it is important
-that the form id is 'hr-application-form' or 'hr_application_form' to make
-the rdb integration work)
+* Create a new Form Folder named 'HR Application form' (it is important that
+  the form id is 'hr-application-form' or 'hr_application_form' to make the
+  rdb integration work)
 * Change the form view by clicking on "Display -> HR Application Form"
 * Click on "Actions -> Import"
 * Select file "hr-application-form.tar.gz"
 * Check "Remove Existing Form Items?"
 * Click "import"
 
-
 XXX: At the moment, there are some additional manual steps needed to make
 the form work properly:
 
 * Click on 'Add new -> RDBPloneFormGenAdapter' and enter
-``osha.applicationformdb`` in the 'Database utility name' field, then click
-'Save'
+  ``osha.applicationformdb`` in the 'Database utility name' field, then click
+  'Save'
 * Click on 'Actions -> Rename' and rename the adapter to ``rdb-adapter``
 * Go back to the form, click on 'QuickEdit' tab and make sure that RDB
-Action Adapter is enabled.
+  Action Adapter is enabled.
 * On the 'Contents' tab, click on the 'Languages' field.
 * Click 'Edit', then check options 'Allow Row Deletion', 'Allow Row
-Insertion' and 'Allow Row Reordering'
+  Insertion' and 'Allow Row Reordering'
 * Click 'Save'.
 
 

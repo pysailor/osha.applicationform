@@ -34,12 +34,6 @@ class TestInstall(IntegrationTestCase):
         from plone.browserlayer import utils
         self.assertIn(IOshaApplicationFormLayer, utils.registered_layers())
 
-    def test_folder_addable(self):
-        """Test if Folder type can be created inside a FormFolder."""
-        types = api.portal.get_tool('portal_types')
-        allowed_types = types.getTypeInfo('FormFolder').allowed_content_types
-        self.failUnless('Folder' in allowed_types)
-
 
 def test_suite():
     """This sets up a test suite that actually runs the tests in the class

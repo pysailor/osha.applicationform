@@ -6,12 +6,6 @@
 
     <include package="Products.CMFCore" />
 
-    <!-- Publish static files -->
-    <browser:resourceDirectory
-       name="osha.applicationform"
-       directory="static"
-       />
-
     <browser:page
        for="*"
        name="vacancies-helper"
@@ -39,21 +33,6 @@
        name="osh-test-rdb"
        class=".views.RDBTestConnection"
        permission="zope2.View"
-       />
-
-    <browser:page
-       for="osha.applicationform.interfaces.IPFGSaveDataAdapterWithFileUpload"
-       name="osh-savedata-tabview"
-       class=".views.PFGSaveDataAdapterWithFileUploadView"
-       template="templates/savedata_tabview.pt"
-       permission="zope2.View"
-       />
-
-    <browser:page
-       for="osha.applicationform.interfaces.IPFGSaveDataAdapterWithFileUpload"
-       name="osh-export-data"
-       class=".views.ExportSavedDataWithFiles"
-       permission="cmf.ManagePortal"
        />
 
     <browser:page

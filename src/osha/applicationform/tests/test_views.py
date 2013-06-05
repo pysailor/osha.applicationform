@@ -8,10 +8,8 @@ from plone.app.testing import login
 from plone.app.testing import setRoles
 from plone.app.testing import TEST_USER_ID
 from plone.app.testing import TEST_USER_NAME
-from StringIO import StringIO
 
 import unittest2 as unittest
-import zipfile
 
 
 def _create_test_content(context):
@@ -43,25 +41,6 @@ def _create_test_content(context):
         container=context.form,
         type="FormFileField",
         title="Application"
-    )
-
-    # create a save data adapter with file upload
-    context.adapter = api.content.create(
-        container=context.portal['form-foo'],
-        type="PFGSaveDataAdapterWithFileUpload",
-        title="Save adapter with upload"
-    )
-
-    # manually set results on the save data adapter
-    context.adapter.setSavedFormInput(
-        'nikola, tesla, pfg_file_upload-434348181305fi432f\r\n'
-        'morga, freeman, pfg_file_upload-124dsu34fghhha3da5')
-
-    # manually create uploads folder
-    api.content.create(
-        container=context.form,
-        type="Folder",
-        title="Uploads"
     )
 
 
@@ -119,46 +98,6 @@ class TestVocabularyViews(IntegrationTestCase):
         # of results is reasonably large (because the list could change in
         # the future and we don't want to worry about it)
         self.assertTrue(len(results._values) > 100)
-
-
-class TestPFGSaveDataAdapterWithFileUploadView(IntegrationTestCase):
-    """Test the view for save data adapter."""
-
-    def setUp(self):
-        """Custom shared utility setup for tests."""
-        self.portal = self.layer['portal']
-        _create_test_content(self)
-
-    def test_get_file_url_format(self):
-        """Check that the url is in right format."""
-        view = self.adapter.restrictedTraverse('@@osh-savedata-tabview')
-        url = view.get_file_url(
-            'application', 'pfg_file_upload-232385sad334das34f')
-
-        self.assertEqual(
-            url, 'http://nohost/plone/form-foo/uploads/232385sad334das34f/application/view')
-
-
-class TestExportSavedDataWithFiles(IntegrationTestCase):
-    """Test the view for exporting saved data and uploaded files."""
-
-    def setUp(self):
-        """Custom shared utility setup for tests."""
-        self.portal = self.layer['portal']
-        _create_test_content(self)
-        self.view = self.adapter.restrictedTraverse('@@osh-export-data')
-
-    def test_export(self):
-        """Test data export."""
-        output = self.view()
-        zf = zipfile.ZipFile(StringIO(output))
-
-        # we should get a zip file with an excel file inside
-        self.assertEqual(
-            self.view.request.response['content-type'], "application/zip")
-        self.assertTrue("save-adapter-with-upload.zip" in
-                        self.view.request.response['content-disposition'])
-        self.assertEqual(zf.namelist(), ['save-adapter-with-upload.xls'])
 
 
 def test_suite():

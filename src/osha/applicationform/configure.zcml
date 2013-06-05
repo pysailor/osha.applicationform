@@ -7,9 +7,6 @@
     xmlns:genericsetup="http://namespaces.zope.org/genericsetup"
     i18n_domain="osha.applicationform">
 
-    <!-- Zope2 initialization -->
-    <five:registerPackage package="." initialize=".initialize" />
-
     <!-- Include configuration for dependencies listed in setup.py -->
     <includeDependencies package="." />
 

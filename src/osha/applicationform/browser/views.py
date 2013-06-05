@@ -9,7 +9,6 @@ from logging import getLogger
 from openpyxl.workbook import Workbook
 from osha.applicationform import _
 from osha.applicationform.config import JOB_VACANCY_ID
-from osha.applicationform.config import PFG_FILE_UPLOAD_PREFIX
 from plone import api
 from plone.i18n.locales.languages import contentlanguages
 from Products.CMFCore.utils import getToolByName
@@ -26,7 +25,6 @@ from zope.component import ComponentLookupError
 
 
 logger = getLogger('osha.applicationform.views')
-
 
 SEND_DATA_EMAIL_MESSAGE = u"""Hello,
 
@@ -76,53 +74,6 @@ class RDBTestConnection(BrowserView):
             logger.exception('Error connecting to rdb:')
             return False
         return True
-
-
-class PFGSaveDataAdapterWithFileUploadView(BrowserView):
-    """View for displaying saved data (with links to uploaded files) and
-    option to export the results.
-
-    INFO: Template is a combination of fg_savedata_view_p3.pt and
-    fg_savedata_tabview_p3.pt from Products.PloneFormGen.
-    """
-
-    def __call__(self):
-        return self.index()
-
-    def get_file_url(self, field_name, submission_id):
-        """Return url to the uploaded file.
-
-        :param field_name: name of the field that we want to fetch the file
-            url for
-        :submission_id: id of the submission
-        """
-
-        # We need the file prefix to identify the file in the results row.
-        submission_uuid = submission_id.split(PFG_FILE_UPLOAD_PREFIX)[1]
-        uploads = self.context.getParentNode().get('uploads', None)
-
-        if uploads:
-            return "{0}/{1}/{2}/view".format(
-                uploads.absolute_url(), submission_uuid, field_name)
-        else:
-            return None
-
-
-class ExportSavedDataWithFiles(BrowserView):
-    """View for exporting saved data and uploaded files."""
-
-    def __call__(self):
-        """Download the data in a zip package."""
-        filename = self.context.id
-        self.context.REQUEST.response.setHeader(
-            "Content-Type",
-            "application/zip"
-        )
-        self.context.REQUEST.response.setHeader(
-            'Content-Disposition',
-            "attachment; filename=%s.zip" % filename
-        )
-        return self.context.get_data_zipped()
 
 
 class SendSavedDataWithFiles(BrowserView):

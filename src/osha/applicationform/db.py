@@ -7,7 +7,6 @@ from five import grok
 from osha.applicationform.config import TEST_DB_SQL
 
 import logging
-import os
 import sqlite3
 import tempfile
 

@@ -21,6 +21,11 @@ class OshaApplicationformLayer(PloneSandboxLayer):
 
     def setUpZope(self, app, configurationContext):
         """Set up Zope."""
+
+        # patch _url so we don't get errors
+        from osha.applicationform.db import OshaApplicationFormDB
+        OshaApplicationFormDB._url = 'sqlite://'
+
         # Load ZCML
         import osha.applicationform
         import Products.PublicJobVacancy
@@ -32,7 +37,6 @@ class OshaApplicationformLayer(PloneSandboxLayer):
         self.loadZCML(package=Products.DataGridField)
         self.loadZCML(package=Products.PFGDataGrid)
         self.loadZCML(package=Products.RichDocument)
-        z2.installProduct(app, 'osha.applicationform')
         z2.installProduct(app, 'Products.PublicJobVacancy')
         z2.installProduct(app, 'Products.DataGridField')
         z2.installProduct(app, 'Products.PFGDataGrid')
@@ -41,6 +45,7 @@ class OshaApplicationformLayer(PloneSandboxLayer):
 
     def setUpPloneSite(self, portal):
         """Set up Plone."""
+
         # Install into Plone site using portal_setup
         applyProfile(portal, 'osha.applicationform:default')
 
@@ -56,7 +61,6 @@ class OshaApplicationformLayer(PloneSandboxLayer):
 
     def tearDownZope(self, app):
         """Tear down Zope."""
-        z2.uninstallProduct(app, 'osha.applicationform')
         z2.uninstallProduct(app, 'Products.PublicJobVacancy')
         z2.uninstallProduct(app, 'Products.DataGridField')
         z2.uninstallProduct(app, 'Products.PFGDataGrid')

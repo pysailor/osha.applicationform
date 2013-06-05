@@ -38,21 +38,17 @@ setup(
     include_package_data=True,
     zip_safe=False,
     install_requires=[
-        'archetypes.schemaextender',
         'five.grok',
         'openpyxl',
         'Pillow',
         'Plone',
         'plone.api',
-        'plone.app.contentlisting',
         'Products.PloneFormGen',
         'Products.PFGDataGrid',
         'Products.PublicJobVacancy',
         'psycopg2',
         'setuptools',
         'slc.rdbploneformgenadapter',
-        'xlwt',
-        'z3c.jbot',
     ],
     extras_require={
         'test': [

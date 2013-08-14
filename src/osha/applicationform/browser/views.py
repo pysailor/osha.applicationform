@@ -219,8 +219,11 @@ class SendSavedDataWithFiles(BrowserView):
 
         # write column names
         for column_count, key in enumerate(all_form_keys):
-            sheet.cell(
-                row=0, column=column_count).value = all_form_keys[column_count]
+            field_id = key.replace('_', '-')
+            field = form.get(field_id)
+            title = field and field.title or field_id
+            sheet.cell(row=0, column=column_count).value = title
+
         # write data
         for row_count, table_row in enumerate(form_data.fetchall()):
             # write basic form fields

@@ -2,15 +2,18 @@ CREATE TABLE hr_application_form (
     id SERIAL PRIMARY KEY,
     job_vacancy VARCHAR,
     mr_ms VARCHAR,
+    gender VARCHAR,
     first_name VARCHAR,
     last_name VARCHAR,
     date_of_birth TIMESTAMP,
+    phone VARCHAR,
     replyto VARCHAR,
     address VARCHAR,
     postal_code VARCHAR,
     town VARCHAR,
     country VARCHAR,
-    nationality VARCHAR
+    nationality VARCHAR,
+    where_you_found_us VARCHAR
 );
 
 CREATE TABLE hr_application_form_application (
@@ -21,9 +24,9 @@ CREATE TABLE hr_application_form_application (
     FOREIGN KEY(hr_application_form_id) REFERENCES hr_application_form(id)
 );
 
-CREATE TABLE hr_application_form_languages_grid ( 
-    id SERIAL PRIMARY KEY, 
-    hr_application_form_id INTEGER, 
+CREATE TABLE hr_application_form_languages_grid (
+    id SERIAL PRIMARY KEY,
+    hr_application_form_id INTEGER,
     language VARCHAR,
     listening VARCHAR,
     reading VARCHAR,

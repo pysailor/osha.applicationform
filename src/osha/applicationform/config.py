@@ -11,15 +11,18 @@ CREATE TABLE hr_application_form (
     id INTEGER PRIMARY KEY  NOT NULL UNIQUE,
     job_vacancy VARCHAR,
     mr_ms VARCHAR,
+    gender VARCHAR,
     first_name VARCHAR,
     last_name VARCHAR,
     date_of_birth DATETIME,
+    phone VARCHAR,
     replyto VARCHAR,
     address VARCHAR,
     postal_code VARCHAR,
     town VARCHAR,
     country VARCHAR,
-    nationality VARCHAR
+    nationality VARCHAR,
+    where_you_found_us VARCHAR
 );
 
 CREATE TABLE hr_application_form_application (

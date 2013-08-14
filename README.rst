@@ -36,24 +36,33 @@ Steps for importing the form:
 * Create a new Form Folder named 'HR Application form' (it is important that
   the form id is 'hr-application-form' or 'hr_application_form' to make the
   rdb integration work)
-* Change the form view by clicking on "Display -> HR Application Form"
 * Click on "Actions -> Import"
 * Select file "hr-application-form.tar.gz"
 * Check "Remove Existing Form Items?"
 * Click "import"
+* Change the form view by clicking on "Display -> HR Application Form"
 
 XXX: At the moment, there are some additional manual steps needed to make
 the form work properly:
 
-* Click on 'Add new -> RDBPloneFormGenAdapter' and enter
-  ``osha.applicationformdb`` in the 'Database utility name' field, then click
-  'Save'
+* Click on 'Add new -> RDBPloneFormGenAdapter' and enter:
+
+  * ``osha.applicationformdb`` in the 'Database utility name' field (or
+    ``osha.applicationform.testdb`` if you want to use a temporary in-memmory
+    sqlite database).
+
+  * In "Form fields to exclude" add the following entries:
+
+    * application-help
+    * languages-help
+    * retype-email-address
+
 * Click on 'Actions -> Rename' and rename the adapter to ``rdb-adapter``
 * Go back to the form, click on 'QuickEdit' tab and make sure that RDB
   Action Adapter is enabled.
-* On the 'Contents' tab, click on the 'Languages' field.
-* Click 'Edit', then check options 'Allow Row Deletion', 'Allow Row
-  Insertion' and 'Allow Row Reordering'
+* On the same page, click on the edit icon next to the 'Languages' field.
+* Check options 'Allow Row Deletion', 'Allow Row Insertion' and
+  'Allow Row Reordering'
 * Click 'Save'.
 
 

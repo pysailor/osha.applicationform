@@ -18,7 +18,7 @@ long_description = \
 
 setup(
     name='osha.applicationform',
-    version='0.2.dev0',
+    version='0.2',
     description="Plone add-on for usign PloneFormGen to create a form on the "
                 "EU-OSHA site, under the ‘vacancies’ section, so that the "
                 "applicant can send the CV and the motivation letter via Web.",

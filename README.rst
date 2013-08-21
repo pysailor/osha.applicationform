@@ -4,7 +4,7 @@ Build application forms with Plone
 
 `osha.applicationform` is a minimalistic Plone add-on that builds on top of the
 `PloneFormGen` product to enable you to build forms on the EU-OSHA site,
-under the ‘vacancies’ section, so that the applicant can send the CV and the
+under the 'vacancies' section, so that the applicant can send the CV and the
 motivation letter via Web.
 
 * `Source code @ GitHub <http://github.com/syslabcom/osha.applicationform>`_

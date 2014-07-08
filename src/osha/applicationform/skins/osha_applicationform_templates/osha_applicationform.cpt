@@ -74,8 +74,8 @@
 
     <metal:fill fill-slot="main">
       <metal:main define-macro="main"
-                  tal:define="vacancies here/@@vacancies-helper">
-
+                  tal:define="vacancies here/@@vacancies-helper;
+                              can_connect here/@@osh-test-rdb">
 
         <div tal:replace="structure provider:plone.abovecontenttitle" />
 
@@ -93,7 +93,7 @@
 
         <div tal:replace="structure provider:plone.abovecontentbody" />
 
-        <tal:form tal:condition="vacancies">
+        <tal:form tal:condition="python: vacancies and can_connect">
             <tal:if tal:condition="here/getFormPrologue | nothing">
               <metal:field use-macro="python:context.widget('formPrologue', mode='view')">
                   Body text
@@ -112,6 +112,15 @@
         <div tal:condition="not:vacancies" i18n:translate="text_no_vacancies">
             Currently there are no open job vacancies.
         </div>
+
+        <dl tal:condition="python: vacancies and not can_connect"
+            class="portalMessage error"
+            i18n:translate="text_rdb_error">
+            <dt>Error</dt>
+            <dd>There is an error with application form configuration.
+              Please contact site administration.
+            </dd>
+        </dl>
 
       </metal:main>
     </metal:fill>

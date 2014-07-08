@@ -40,6 +40,7 @@ setup(
     install_requires=[
         'archetypes.schemaextender',
         'five.grok',
+        'openpyxl',
         'Pillow',
         'Plone',
         'plone.api',
@@ -47,7 +48,9 @@ setup(
         'Products.PloneFormGen',
         'Products.PFGDataGrid',
         'Products.PublicJobVacancy',
+        'psycopg2',
         'setuptools',
+        'slc.rdbploneformgenadapter',
         'xlwt',
         'z3c.jbot',
     ],

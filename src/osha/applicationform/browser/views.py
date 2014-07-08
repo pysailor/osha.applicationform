@@ -1,31 +1,39 @@
+from collective.lead.interfaces import IDatabase
 from email import encoders
 from email.mime.base import MIMEBase
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from datetime import datetime
 from DateTime import DateTime
+from logging import getLogger
+from openpyxl.workbook import Workbook
 from osha.applicationform import _
-from osha.applicationform.config import COUNTRIES
-from osha.applicationform.config import NATIONALITIES
+from osha.applicationform.config import JOB_VACANCY_ID
 from osha.applicationform.config import PFG_FILE_UPLOAD_PREFIX
 from plone import api
 from plone.i18n.locales.languages import contentlanguages
 from Products.CMFCore.utils import getToolByName
 from Products.Five.browser import BrowserView
 from Products.PFGDataGrid.vocabulary import SimpleDynamicVocabulary
+from slc.rdbploneformgenadapter.utils import cleanString
+from sqlalchemy.exc import SQLAlchemyError
+from StringIO import StringIO
+from smtplib import SMTPRecipientsRefused
+from zipfile import ZipFile
+from zipfile import ZipInfo
+from zope.component import getUtility
+from zope.component import ComponentLookupError
 
-import logging
 
-logger = logging.getLogger('osha.applicationform.views')
+logger = getLogger('osha.applicationform.views')
 
 
 SEND_DATA_EMAIL_MESSAGE = u"""Hello,
 
-we're sending you a file with saved user submissions. You can also view the
-submissions and export them manually online: {0}
+we're sending you a file with saved user submissions.
 
 Best regards,
-{1}
+{0}
 """
 
 
@@ -44,27 +52,30 @@ class VacanciesView(BrowserView):
                 if DateTime(datetime.now()) < item.getObject().deadline]
 
 
-class CountriesView(BrowserView):
-    """Helper view to get a list of countries."""
-
-    def __call__(self):
-        return [(item.lower(), item) for item in COUNTRIES]
-
-
 class LanguagesView(BrowserView):
     """Helper view to get a list of languages."""
 
     def __call__(self):
-        languages = sorted(
+        languages = [''] + sorted(
             [lang[1] for lang in contentlanguages.getLanguageListing()])
         return SimpleDynamicVocabulary(languages)
 
 
-class NationalitiesView(BrowserView):
-    """Helper view to get a list of nationalities."""
+class RDBTestConnection(BrowserView):
+    """Helper view to test if we can connect to the rdb."""
 
     def __call__(self):
-        return [(item.lower(), item) for item in NATIONALITIES]
+        """Try to create a connection to the database. If connection fails,
+        return False, True otherwise.
+        """
+        try:
+            rdb_adapter = self.context['rdb-adapter']
+            db = getUtility(IDatabase, rdb_adapter.db_utility_name)
+            connection = db.connection.engine.connect()
+        except:
+            logger.exception('Error connecting to rdb:')
+            return False
+        return True
 
 
 class PFGSaveDataAdapterWithFileUploadView(BrowserView):
@@ -118,29 +129,29 @@ class SendSavedDataWithFiles(BrowserView):
     """View for sending saved data and uploaded files via email."""
 
     def __call__(self):
-        """  """
-        path = '/'.join(self.context.getParentNode().getPhysicalPath())
+        self.send_data()
+
+    def send_data(self, vacancies=None):
         portal = api.portal.get()
-        catalog = api.portal.get_tool('portal_catalog')
-        site_properties = api.portal.get_tool(
-            'portal_properties').site_properties
-        email_charset = site_properties.getProperty('email_charset', 'utf-8')
+        portal_props = api.portal.get_tool('portal_properties')
+        email_charset = portal_props.site_properties.getProperty(
+            'email_charset', 'utf-8')
         sender = portal.getProperty('email_from_address', '')
-        recipient = catalog(
-            portal_type='FormMailerAdapter',
-            path={"query": path, "depth": 1}
-        )[0].getObject().recipient_email
+        hr_to_address = portal_props.osha_properties.getProperty(
+            'hr_to_address')
+
+        if not hr_to_address:
+            raise ValueError('You need to enter HR email address in osha '
+                             'properties.')
 
         # create the container (outer) email message.
         msg = MIMEMultipart()
         msg['Subject'] = _(u'HR applications data')
         msg['From'] = sender
-        msg['To'] = recipient
+        msg['To'] = hr_to_address
 
         text = SEND_DATA_EMAIL_MESSAGE.format(
-            self.context.absolute_url(),
-            portal.getProperty('title')
-        ).encode(email_charset, 'replace')
+            portal.getProperty('title')).encode(email_charset, 'replace')
 
         # add body text
         body = MIMEText(
@@ -155,15 +166,172 @@ class SendSavedDataWithFiles(BrowserView):
         attachment.add_header(
             'Content-Disposition',
             'attachment',
-            filename=self.context.id + '.zip'
+            filename=self.context.getParentNode().id + '.zip'
         )
-        attachment.set_payload(self.context.get_data_zipped())
+        attachment.set_payload(self.get_data_zipped(vacancies))
         encoders.encode_base64(attachment)
         msg.attach(attachment)
 
-        # send the message
         mailhost = api.portal.get_tool('MailHost')
-        mailhost.send(msg.as_string())
-        logger.info('PFG data send to {0}'.format(recipient))
 
-        return 'Data sent to {0}'.format(recipient)
+        # send the message
+        try:
+            mailhost.send(msg, immediate=True)
+        except SMTPRecipientsRefused:
+            logger.error('Error sending email to {0}'.format(hr_to_address))
+            raise SMTPRecipientsRefused('Recipient address rejected by server')
+        logger.info('Data sent to {0}'.format(hr_to_address))
+        return 'Data sent to {0}'.format(hr_to_address)
+
+    def get_data_zipped(self, vacancies=None):
+        """Return the data in a zip package.
+
+        :returns: ZIP file with saved data in excel format and uploaded files
+        :rtype: StringIO binary stream
+        """
+
+        output = StringIO()
+        zipfile = ZipFile(output, mode='w')
+
+        try:
+            self._write_to_zip(zipfile, vacancies)
+        finally:
+            zipfile.close()
+
+        return output.getvalue()
+
+    def _write_to_zip(self, zipfile, vacancies=None):
+        """Write form data to excel file and zip it together with uploaded
+        files.
+
+        File columns contain links to uploaded files. File structure of the
+        exported excel file and accompanying files will be like this:
+
+        form_id.xlsx
+        files
+        |
+        |--id_some_file1.txt
+        |--id_some_file2.pdf
+        ...
+
+        There are a couple of assumptions about the rdb structure. Please see
+        slc.rdbploneformgenadapter.content.content.py
+
+        :param zipfile: ZipFile instance that will hold the data
+        :param vacancies: a list of job vacancies to fetch the data for. If
+            no job vacancies are provided, return data for all job vacancies.
+        """
+        form = self.context.getParentNode()
+        form_table_name = cleanString(form.id)
+        db_utility_name = self.context.db_utility_name
+
+        # get the rdb connection
+        try:
+            db = getUtility(IDatabase, db_utility_name)
+            connection = db.connection.engine.connect()
+        except (ComponentLookupError, SQLAlchemyError):
+            logger.exception('Error connecting to database.')
+            raise
+
+        grid_fields = []
+        file_fields = []
+        for key in form.keys():
+            if(form[key].portal_type == 'FormDataGridField'):
+                grid_fields.append(key)
+            elif(form[key].portal_type == 'FormFileField'):
+                file_fields.append(key)
+
+        if not vacancies:  # fetch data for all job vacancies
+            form_data = connection.execute(
+                "SELECT * FROM {0}".format(form_table_name)
+            )
+        else:  # fetch data for selected job vacancies
+            form_data = connection.execute(
+                "SELECT * FROM {0} WHERE {1} IN ({2})".format(
+                    form_table_name,
+                    JOB_VACANCY_ID,
+                    "'" + "','".join(vacancies) + "'",
+                )
+            )
+
+        # Extending form_keys with grid and file fields, so we can
+        # write them to excel easier inside the loop
+        form_keys = form_data.keys()
+        all_form_keys = form_keys + grid_fields + file_fields
+
+        # Create an excel workbook
+        book = Workbook()
+        sheet = book.worksheets[0]
+        sheet.default_column_dimension.auto_size = True
+        sheet.title = form_table_name
+        date_time = datetime.now().timetuple()[:6]
+
+        # write column names
+        for column_count, key in enumerate(all_form_keys):
+            sheet.cell(
+                row=0, column=column_count).value = all_form_keys[column_count]
+        # write data
+        for row_count, table_row in enumerate(form_data.fetchall()):
+            # write basic form fields
+            for form_column_count, key in enumerate(form_keys):
+                cell = sheet.cell(row=row_count + 1, column=form_column_count)
+                cell.value = table_row[key]
+            count = 1
+
+            # write grid form fields
+            for field in grid_fields:
+                grid_table_name = form_table_name + "_" + cleanString(field)
+                grid_field_data = connection.execute(
+                    'SELECT * FROM {0} WHERE {1}_id={2}'.format(
+                    grid_table_name, form_table_name, table_row[0])
+                )
+                # hack to get all grid rows in same cell
+                grid_field_string = ""
+                keys = grid_field_data.keys()
+                keys.remove(form_table_name + '_id')
+                grid_field_data_all = grid_field_data.fetchall()
+                for row in grid_field_data_all:
+                    for key in keys:
+                        grid_field_string += "{0}: {1}, ".format(key, row[key])
+                    grid_field_string = grid_field_string[:-2] + '\n'
+                if grid_field_string:
+                    cell = sheet.cell(
+                        row=row_count + 1, column=form_column_count + count
+                    )
+                    cell.style.alignment.wrap_text = True
+                    cell.value = grid_field_string[:-1]
+                # set width on longest row
+                sheet.column_dimensions[cell.column].width = max(
+                    [len(grid_row) for
+                        grid_row in grid_field_string.split("\n")]
+                )
+                count += 1
+
+            # write file form fields
+            for file_count, field in enumerate(file_fields):
+                file_table_name = form_table_name + "_" + cleanString(field)
+                file_field_data = connection.execute(
+                    'SELECT * FROM {0} WHERE {1}_id={2}'.format(
+                    file_table_name, form_table_name, table_row[0]))
+                filename = str(table_row[0]) + "_" + str(file_count)
+                for row in file_field_data.fetchall():
+                    file_path = 'files/{0}.{1}'.format(filename, row["type"])
+                    zip_info = ZipInfo(file_path, date_time)
+                    # setting permissions manually to make it work on Linux
+                    zip_info.external_attr = 0666 << 16L
+                    zipfile.writestr(zip_info, row["data"])
+                    cell = sheet.cell(
+                        row=row_count + 1,
+                        column=form_column_count + count
+                    )
+                    cell.value = "View file"
+                    cell.hyperlink = file_path
+                    count += 1
+
+        output_tmp = StringIO()
+        book.save(output_tmp)
+
+        zip_info = ZipInfo('{0}.xlsx'.format(form_table_name), date_time)
+        # setting permissions manually to make it work on Linux
+        zip_info.external_attr = 0666 << 16L
+        zipfile.writestr(zip_info, output_tmp.getvalue())

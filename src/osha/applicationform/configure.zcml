@@ -37,4 +37,6 @@
         provides="Products.GenericSetup.interfaces.EXTENSION"
         /-->
 
+    <cmf:registerDirectory name="skins" directory="skins" recursive="True" />
+
 </configure>

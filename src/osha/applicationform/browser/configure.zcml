@@ -21,29 +21,8 @@
 
     <browser:page
        for="*"
-       name="countries-helper"
-       class=".views.CountriesView"
-       permission="zope2.View"
-       />
-
-    <browser:page
-       for="*"
        name="languages-helper"
        class=".views.LanguagesView"
-       permission="zope2.View"
-       />
-
-    <browser:page
-       for="*"
-       name="nationalities-helper"
-       class=".views.NationalitiesView"
-       permission="zope2.View"
-       />
-
-    <browser:page
-       for="Products.PloneFormGen.interfaces.IPloneFormGenForm"
-       name="osh-application-form"
-       template="templates/application_form.pt"
        permission="zope2.View"
        />
 
@@ -51,9 +30,16 @@
         for="Products.PloneFormGen.interfaces.IPloneFormGenForm"
         menu="plone_displayviews"
         title="HR Application Form"
-        action="@@osh-application-form"
+        action="osha_applicationform"
         description="Form for managing applications"
         />
+
+    <browser:page
+       for="Products.PloneFormGen.interfaces.IPloneFormGenForm"
+       name="osh-test-rdb"
+       class=".views.RDBTestConnection"
+       permission="zope2.View"
+       />
 
     <browser:page
        for="osha.applicationform.interfaces.IPFGSaveDataAdapterWithFileUpload"
@@ -71,10 +57,17 @@
        />
 
     <browser:page
-       for="osha.applicationform.interfaces.IPFGSaveDataAdapterWithFileUpload"
+       for="slc.rdbploneformgenadapter.interfaces.IRDBPloneFormGenAdapterContent"
        name="osh-send-data"
        class=".views.SendSavedDataWithFiles"
        permission="cmf.ManagePortal"
        />
+
+    <browser:page
+      name="osh-send-data-form"
+      for="slc.rdbploneformgenadapter.interfaces.IRDBPloneFormGenAdapterContent"
+      permission="cmf.ManagePortal"
+      class=".forms.SendJobVacancyDataForm"
+      />
 
 </configure>

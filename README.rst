@@ -12,6 +12,7 @@ motivation letter via Web.
 * `Continuous Integration @ Travis-CI
   <http://travis-ci.org/syslabcom/osha.applicationform>`_
 
+
 Installation
 ============
 
@@ -32,18 +33,51 @@ form with all the fields.
 
 Steps for importing the form:
 
-1. Create a new Form Folder
-2. Change the form view by clicking on "Display -> HR Application Form"
-3. Click on "Actions -> Import"
-4. Select file "hr-application-form.tar.gz"
-5. Check "Remove Existing Form Items?"
-6. Click "import"
-7. There are some manual steps needed to make the languages field work
-properly:
-* click on 'Contents' tab on the form folder, then on 'Languages' field
-* click 'Edit', then check options 'Allow Row Deletion', 'Allow Row
-Insertion' and 'Allow Row Reordering'.
-* click 'Save'
+* Create a new Form Folder named 'HR Application form' (it is important
+that the form id is 'hr-application-form' or 'hr_application_form' to make
+the rdb integration work)
+* Change the form view by clicking on "Display -> HR Application Form"
+* Click on "Actions -> Import"
+* Select file "hr-application-form.tar.gz"
+* Check "Remove Existing Form Items?"
+* Click "import"
+
+
+XXX: At the moment, there are some additional manual steps needed to make
+the form work properly:
+
+* Click on 'Add new -> RDBPloneFormGenAdapter' and enter
+``osha.applicationformdb`` in the 'Database utility name' field, then click
+'Save'
+* Click on 'Actions -> Rename' and rename the adapter to ``rdb-adapter``
+* Go back to the form, click on 'QuickEdit' tab and make sure that RDB
+Action Adapter is enabled.
+* On the 'Contents' tab, click on the 'Languages' field.
+* Click 'Edit', then check options 'Allow Row Deletion', 'Allow Row
+Insertion' and 'Allow Row Reordering'
+* Click 'Save'.
+
+
+Setting up RDB
+--------------
+
+HR Application Form uses relational database to store the data. There are two
+sql scripts in resources/, which should be used to create initial db
+structure. Currently sqlite and postgresql are supported.
+
+Instructions for creating tables in postgresql (you need to create a database
+beforehand)::
+
+    $ psql -d database_name -a -f hr_form_postgres.sql
+
+Then you need to set the connection string in your buildout::
+
+    [instance]
+    ...
+    zope-conf-additional =
+    <product-config osha.applicationform>
+        hr.database postgresql://username:password@ip/database_name'
+    </product-config>
 
 
 Requirements
@@ -51,6 +85,7 @@ Requirements
 
     * `Plone <http://plone.org/>`_ 4.1 or newer
     * `PloneFormGen <http://plone.org/products/ploneformgen>`_ 1.7 or newer
+
 
 Usage
 =====

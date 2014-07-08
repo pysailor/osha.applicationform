@@ -111,15 +111,6 @@ class TestVocabularyViews(IntegrationTestCase):
         self.assertEqual(len(results), 1)
         self.assertEqual(results[0], ('programer', 'Programer'))
 
-    def test_countries_view(self):
-        """Test if we get a list of countries."""
-        results = self.portal.restrictedTraverse('@@countries-helper')()
-
-        # just test that we get the results without error and that the number
-        # of results is reasonably large (because the list could change in
-        # the future and we don't want to worry about it)
-        self.assertTrue(len(results) > 20)
-
     def test_languages_view(self):
         """Test if we get a list of lanugages."""
         results = self.portal.restrictedTraverse('@@languages-helper')()
@@ -128,15 +119,6 @@ class TestVocabularyViews(IntegrationTestCase):
         # of results is reasonably large (because the list could change in
         # the future and we don't want to worry about it)
         self.assertTrue(len(results._values) > 100)
-
-    def test_nationalities_view(self):
-        """Test if we get a list of nationalities."""
-        results = self.portal.restrictedTraverse('@@nationalities-helper')()
-
-        # just test that we get the results without error and that the number
-        # of results is reasonably large (because the list could change in
-        # the future and we don't want to worry about it)
-        self.assertTrue(len(results) > 20)
 
 
 class TestPFGSaveDataAdapterWithFileUploadView(IntegrationTestCase):

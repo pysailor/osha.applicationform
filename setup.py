@@ -6,7 +6,7 @@ from setuptools import setup
 
 import os
 
-version = "1.0dev"
+version = '1.0'
 
 
 # shamlessly stolen from Hexagon IT guys

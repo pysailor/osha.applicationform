@@ -1,2 +1,10 @@
 graft src/osha
 include *.cfg *.rst *.in
+recursive-include buildout.d *.cfg
+
+# added by check_manifest.py
+include *.py
+include *.sh
+include .travis.yml
+recursive-include docs *.rst
+recursive-include resources *.sql
